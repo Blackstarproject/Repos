@@ -1,0 +1,882 @@
+Windows Registry Editor Version 5.00
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PeerDistSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\diagsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Dnscache]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\GraphicsPerfSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\AppVClient]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\shpamsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\smphost]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SysMain]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UsoSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WSearch]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WaaSMedicSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\cbdhsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\XboxGipSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\tzautoupdate]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WwanSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\CscService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wmiApSrv]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WbioSrvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\mpssvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\iphlpsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\p2psvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RasAuto]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Spooler]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SEMgrSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RasMan]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\XblAuthManager]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MapsBroker]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\hidserv]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\pla]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\DusmSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TrkWks]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SNMPTRAP]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RpcLocator]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RemoteAccess]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\lmhosts]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SessionEnv]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SharedAccess]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\defragsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\DoSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UmRdpService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wercplsupport]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SCPolicySvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BcastDVRUserService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WpnUserService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wlidsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NcaSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NcbService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SDRSVC]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\swprv]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FDResPub]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PrintNotify]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WpcMonSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Wecsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FrameServer]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\XboxNetApiSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Netlogon]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\AssignedAccessManagerSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\vmicvmsession]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NgcSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PushToInstall]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LicenseManager]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\icssvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UevAgentService]
+"Start"=dword:00000004
+
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\vmicrdv]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\spectrum]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\lfsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UserDataSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\vmicshutdown]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\stisvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\vmicvss]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MSiSCSI]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\fhsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WalletService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FontCache]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\ClipSVC]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SmsRouter]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\dmwappushservice]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wbengine]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\irmon]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SensrSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\vmickvpexchange]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\ScDeviceEnum]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WPDBusEnum]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PcaSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wisvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\vmicheartbeat]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TabletInputService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\vmictimesync]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WpnService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SENS]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinRM]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WEPHOSTSVC]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RmSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\InstallService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BDESVC]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\ALG]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TermService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SCardSvr]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WiaRpc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\XblGameSave]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TapiSrv]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PhoneSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VSS]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\RemoteRegistry]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\AppIDSvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\vmicguestinterface]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Fax]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BITS]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\DiagTrack]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PerfHost]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wscsvc]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wuauserv]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PolicyAgent]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\IKEEXT]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Themes]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SensorDataService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SensorService]
+"Start"=dword:00000004
+
+Disable unwanted services
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WerSvc
+"Start"=dword:00000004
+
+Disable Recommended Apps
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Cloud Content
+"DisableWindowsConsumerFeatures"=dword:00000001
+
+Disable App Sync
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync
+"EnableBackupForWin8Apps"=dword:00000001
+
+Disable Remote App Tracking
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat
+"AITEnable"=dword:00000000
+"DisableInventory"=dword:00000001
+
+Don't report handwriting recognition errors
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports
+"PreventHandwritingErrorReports"=dword:00000001
+
+Disable InPrivate data collection
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Internet Explorer\Safety\PrivacIE
+"DisableLogging"=dword:00000001
+
+Automatic acceptance of the WMP agreement
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsMediaPlayer
+"GroupPrivacyAcceptance"=dword:00000001
+
+Disable Windows Customer Experience Improvement Program
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows
+"CEIPEnable"=dword:00000000
+
+Allow installation of unpublished apps
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock
+"AllowAllTrustedApps"=dword:00000001
+
+Taskbar transparency
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+"UseOLEDTaskbarTransparency"=dword:00000001
+
+Enable Power Scheme "High Performance"
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
+"power"="POWERCFG /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"
+Never turn off the monitor
+"monitor"="POWERCFG /CHANGE monitor-timeout-ac 0"
+
+Disable search and auto-installation of drivers
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching
+"SearchOrderConfig"=dword:00000000
+
+Disable auto-update for tile apps
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate
+"AutoDownload"=dword:00000002
+
+Allow apps from any sources
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer
+"AicEnabled"="Anywhere"
+
+Disable downloading updates from other computers
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config
+"DownloadMode_BackCompat"=dword:00000000
+"DODownloadMode"=dword:00000000
+
+
+Disable downloading updates from other computers
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Settings
+"DownloadMode"=dword:00000000
+"DownloadModeProvider"=dword:00000008
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics]
+"Value"="Deny"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appointments]
+"Value"="Deny"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\cellularData]
+"Value"="Deny"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\chat]
+"Value"="Deny"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\contacts]
+"Value"="Deny"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\email]
+"Value"="Deny"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location]
+"Value"="Deny"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone]
+; Разрешить доступ к микрофону
+"Value"="Allow"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\phoneCallHistory]
+"Value"="Deny"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation]
+"Value"="Deny"
+
+Allow webcam access
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam
+"Value"="Allow"
+
+Disable loading of improved device icons
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata
+"PreventDeviceMetadataFromNetwork"=dword:00000001
+
+Keylogger and Telemetry
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack
+"DisableAutomaticTelemetryKeywordReporting"=dword:00000001
+"TelemetryServiceDisabled"=dword:00000001
+
+Disable Telemetry
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack\TestHooks
+"DisableAsimovUpload"=dword:00000001
+
+Disable Telemetry
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\PerfTrack
+"Disabled"=dword:00000001
+
+Disable Telemetry
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection
+"AllowTelemetry"=dword:00000000
+
+Disable error reporting
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting
+"Disabled"=dword:00000001
+
+Allow local scripts and remote signed scripts
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell
+"ExecutionPolicy"="RemoteSigned"
+
+Allow local scripts and remote signed scripts
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell
+"ExecutionPolicy"="RemoteSigned"
+
+Use Net4.5 instead of 3.5
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NETFramework]
+; Использовать Net4.5 вместо 3.5
+"OnlyUseLatestCLR"=dword:00000001
+
+Use Net4.5 instead of 3.5
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\.NETFramework
+"OnlyUseLatestCLR"=dword:00000001
+
+Disable Telemetry
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\SQMClient\Windows
+"CEIPEnable"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag]
+; Скрыть папку Видео
+"ThisPCPolicy"="Hide"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag]
+; Скрыть папку Документы
+"ThisPCPolicy"="Hide"
+
+Hide Downloads folder
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Hide Pictures folder
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Hide the Music folder
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Hide 3D object
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Hide Video folder
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Hide Documents folder
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Hide Downloads folder
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Hide Pictures folder
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Hide the Music folder
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Hide the Desktop folder
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\PropertyBag
+"ThisPCPolicy"="Hide"
+
+Disable auto-update maps
+[HKEY_LOCAL_MACHINE\SYSTEM\Maps
+"AutoUpdateEnabled"=dword:00000000
+
+Disable recording of the last time the file was accessed.
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\FileSystem
+"NtfsDisableLastAccessUpdate"=dword:00000001
+
+Keylogger and telemetry disabled, 2 - only for files 0 - disabled, 2 - only for download files (if SysMain is disabled - purple is what is downloaded here (if SysMain is disabled - purple is there)
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Session Manager\Memory Management\PrefetchParameters
+; Prefetcher/Superfetch: 
+"EnablePrefetcher"=dword:00000002
+"EnableSuperfetch"=dword:00000002
+
+Disable Keylogger and Telemetry
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\WMI\Autologger\Circular Kernel Context Logger
+"Start"=dword:00000000
+
+Disable Keylogger and Telemetry
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\WMI\Autologger\AutoLogger-Diagtrack-Listener
+"Start"=dword:00000000
+
+Disable Keylogger and Telemetry
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\WMI\Autologger\AppModel
+"Start"=dword:00000000
+
+Disable Keylogger and Telemetry
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\WMI\Autologger\SQMLogger
+"Start"=dword:00000000
+
+Disable firewall
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\PublicProfile
+"EnableFirewall"=dword:00000000
+
+Disable firewall
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile
+"EnableFirewall"=dword:00000000
+
+Allow guest login (to access shared folders)
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\LanmanWorkstation\Parameters
+"AllowInsecureGuestAuth"=dword:00000001
+
+Do not expand dynamic VHDs to the maximum
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\FsDepends\Parameters
+"VirtualDiskExpandOnMount"=dword:00000004
+
+Speed ​​up the explorer
+[HKEY_CURRENT_USER\Control Panel\Desktop
+"AutoEndTasks"="1"
+"HungAppTimeout"="2000"
+"MenuShowDelay"="100"
+"WaitToKillAppTimeout"="2000"
+"LowLevelHooksTimeout"="2000"
+; Разрешить исправлять размытость DPI
+"EnablePerProcessSystemDPI"=dword:00000001
+; Использование 100% качества картинки
+"JPEGImportQuality"=dword:00000064
+
+Prevent websites from accessing the list of languages
+[HKEY_CURRENT_USER\Control Panel\International\User Profile
+"HttpAcceptLanguageOptOut"=dword:00000001
+
+Disable Cortana
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Search
+"CortanaEnabled"=dword:00000000
+"CortanaConsent"=dword:00000000
+"AllowSearchToUseLocation"=dword:00000000
+"BingSearchEnabled"=dword:00000000
+; Отключить историю поиска
+"DeviceHistoryEnabled"=dword:00000000
+
+Prevent apps from running in the background
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications
+"GlobalUserDisabled"=dword:00000001
+
+Speed ​​up startup programs
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Serialize
+"StartupDelayInMSec"=dword:00000000
+
+Prevent tracking of app launches
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+"Start_TrackProgs"=dword:00000000
+
+Disable ad identifier
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo
+"Enabled"=dword:00000000
+
+Disable tips and tricks from MS
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Privacy
+"TailoredExperiencesWithDiagnosticDataEnabled"=dword:00000000
+
+Disable Get updates only from Microsoft
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization
+"SystemSettingsDownLoadMode"=dword:00000001
+
+Disable autoplay
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers
+"DisableAutoplay"=dword:00000001
+
+Disable GameDVR
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR]
+"AppCaptureEnabled"=dword:00000000
+
+Disable GameDVR
+[HKEY_CURRENT_USER\System\GameConfigStore
+"GameDVR_Enabled"=dword:00000000
+
+Disable Integrated Windows Authentication
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings
+"EnableNegotiate"=dword:00000000
+Disable warning about web browsing over secure connection
+"WarnonZoneCrossing"=dword:00000000
+
+
+Disable warning "Information transmitted over the Internet
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3
+"1601"=dword:00000000
+
+Change Window title color
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\DWM
+"Composition"=dword:00000001
+"ColorPrevalence"=dword:00000001
+"AccentColorInactive"=dword:c4767676
+"ColorizationColor"=dword:c40078d7
+
+Disable error reporting
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\Windows Error Reporting
+"Disabled"=dword:00000001
+
+Disable handwriting personalization
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Personalization\Settings
+"AcceptedPrivacyPolicy"=dword:00000000
+
+Disable Keylogger and Telemetry
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Input\TIPC
+"Enabled"=dword:00000000
+
+Disable the offer to configure the Internet
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Internet Connection Wizard
+"Completed"=dword:00000001
+
+Disable the use of recommended sites
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Internet Explorer\Suggested Sites
+"Enabled"=dword:00000000
+
+Disable Open pop-ups in a new tab
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Internet Explorer\TabbedBrowsing
+"PopupsUseNewWindow"=dword:00000002
+"NewTabPageShow"=dword:00000002
+
+Disable Do not warn about simultaneous closing of tabs
+"WarnOnClose"=dword:00000000
+"ShowTabsWelcome"=dword:00000000
+
+Disable Always switch to a new tab when creating it
+"OpenInForeground"=dword:00000001
+
+Disable feedback generation
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Siuf\Rules
+"NumberOfSIUFInPeriod"=dword:00000000
+
+Hide Previous Versions Tab
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\PreviousVersions
+"DisableLocalPage"=dword:00000001
+
+Disable the ability to participate in the Help Improvement Program
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Assistance\Client\1.0
+"NoExplicitFeedback"=dword:00000001
+"NoImplicitFeedback"=dword:00000001
+
+Show full names of long files in explorer
+HELP Desktop IconTitleWrap
+[HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics
+"IconTitleWrap"="0" Disables
+
+Mouse selecting as if it is held down< and keyboard acting as though the shift key is constantly pressed< even when it"s not
+[HKEY_CURRENT_USER\Control Panel\Accessibility\SlateLaunch
+"LaunchAT"=dword:00000000
+"ATapp"=""
+
+Disables StickyKeys for all users
+[HKEY_CURRENT_USER\Control Panel\Accessibility\StickyKeys
+; Отключить залипание SHIFT 
+"Flags"="506"
+
+This plays a  CapsLock beep 
+[HKEY_CURRENT_USER\Control Panel\Accessibility\ToggleKeys
+; Включить звук переключения CAPS
+"Flags"="63" 
+
+Turns off NumLocks on keyboard
+[HKEY_CURRENT_USER\Control Panel\Keyboard\
+"NumLock"
+"InitialKeyboardIndicators"="2"

@@ -1,0 +1,37 @@
+Select Case MsgBox("Your Message", MsgBoxStyle.YesNoCancel, "caption")
+                    Case MsgBoxResult.Yes
+                        MessageBox.Show("Yes button")
+                    Case MsgBoxResult.Cancel
+                        MessageBox.Show("Cancel button")
+                    Case MsgBoxResult.No
+                        MessageBox.Show("NO button")
+ End Select
+
+Note: Add audio to choice selections
+
+
+Dim result = MessageBox.Show("Message To Display", "MessageBox Title", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)
+
+If result = DialogResult.Cancel Then
+
+    MessageBox.Show("Cancel Button Pressed", "MessageBox Title",MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
+
+ElseIf result = DialogResult.No Then
+
+    MessageBox.Show("No Button Pressed", "MessageBox Title", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+ElseIf result = DialogResult.Yes Then
+
+    MessageBox.Show("Yes Button Pressed", "MessageBox Title", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+End If
+
+
+Dim result As DialogResult = MessageBox.Show("message", "caption", MessageBoxButtons.YesNoCancel)
+If result = DialogResult.Cancel Then
+    MessageBox.Show("Cancel pressed")
+ElseIf result = DialogResult.No Then
+    MessageBox.Show("No pressed")
+ElseIf result = DialogResult.Yes Then
+    MessageBox.Show("Yes pressed")
+End If

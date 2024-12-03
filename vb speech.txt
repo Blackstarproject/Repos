@@ -1,0 +1,452 @@
+Imports System
+Imports System.Collections.Generic
+Imports System.ComponentModel
+Imports System.Data
+Imports System.Drawing
+Imports System.Speech
+Imports System.Speech.Recognition
+Imports System.Speech.Synthesis
+Imports System.Diagnostics
+Imports System.Runtime.InteropServices
+Imports System.Threading
+Imports System.Threading.Tasks
+Imports System.Linq
+Imports System.Text
+Imports System.Windows.Forms
+Imports System.Xml
+Imports System.IO
+Imports System.Media
+Imports System.Management
+Imports System.Xml.Linq
+Imports System.Web
+Imports NAudio
+Imports NAudio.CoreAudioApi
+
+Namespace Jerry
+    Public Partial Class Form1
+        Inherits Form
+
+        <DllImport("wininet.dll")>
+        Private Shared Function InternetGetConnectedState(<Out> ByRef Description As Integer, ByVal ReservedValue As Integer) As Boolean
+        Private _recognizer As SpeechRecognitionEngine = New SpeechRecognitionEngine()
+        Private Jerry As SpeechSynthesizer = New SpeechSynthesizer()
+        Private count As Integer = 1
+        Private cpuCounter As PerformanceCounter
+        Private ramCounter As PerformanceCounter
+        Private QEvent As String
+        Private ProcWindow As String
+        Private rnd As Random = New Random()
+        Private Temperature As String
+        Private Condition As String
+        Private Humidity As String
+        Private Windspeed As String
+        Private Town As String
+        Private TFCond As String
+        Private TFHigh As String
+        Private TFLow As String
+
+        Public Sub New()
+            InitializeComponent()
+            InitialiseCPUCounter()
+            InitializeRAMCounter()
+        End Sub
+
+        Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs)
+            Me.WindowState = FormWindowState.Maximized
+            Me.Location = New Point(0, 0)
+            Me.Size = Screen.PrimaryScreen.WorkingArea.Size
+            _recognizer.SetInputToDefaultAudioDevice()
+            Dim Result As RecognitionResult = _recognizer.Recognize()
+            _recognizer.LoadGrammar(New Grammar(New GrammarBuilder(New Choices(File.ReadAllLines("D:\Jerry\Jerry\bin\Debug\Commands.txt")))))
+            AddHandler _recognizer.SpeechRecognized, New EventHandler(Of SpeechRecognizedEventArgs)(AddressOf _recognizer_SpeechRecognized)
+            _recognizer.RecognizeAsync(RecognizeMode.Multiple)
+            GetWeather()
+            Dim now As DateTime = DateTime.Now
+            Dim time As String = now.GetDateTimeFormats("t"c)(0)
+            Dim p As PowerStatus = SystemInformation.PowerStatus
+            progressBar1.Value = CInt((p.BatteryLifePercent * 100))
+            lbl_BatteryPercent.Text = String.Format("{0}%", p.BatteryLifePercent * 100)
+            lbl_LoggedIn.Text = Environment.UserName
+            label1.Visible = True
+            label2.Visible = True
+            label3.Visible = True
+            label4.Visible = True
+            label5.Visible = True
+            label6.Visible = True
+            label8.Visible = True
+            label11.Visible = True
+            label12.Visible = True
+            label13.Visible = True
+            label14.Visible = True
+            label18.Visible = True
+            label21.Visible = True
+            button1.Visible = True
+            button2.Visible = True
+            button3.Visible = True
+            button4.Visible = True
+            button5.Visible = True
+            button6.Visible = True
+            button7.Visible = True
+            button8.Visible = True
+            button9.Visible = True
+            progressBar1.Visible = True
+            textBox1.Visible = True
+            radioButton1.Visible = True
+            radioButton2.Visible = True
+            VUMeter.Visible = True
+
+            If SystemInformation.PowerStatus.PowerLineStatus = PowerLineStatus.Offline Then
+                lbl_BatteryRunning.Text = "Running on DC"
+            Else
+
+                If SystemInformation.PowerStatus.PowerLineStatus = PowerLineStatus.Online Then
+                    lbl_BatteryRunning.Text = "Running on AC"
+                End If
+            End If
+
+            Dim Desc As Integer
+
+            If Form1.InternetGetConnectedState(Desc, 0) Then
+
+                If now.Hour >= 5 AndAlso now.Hour < 12 Then
+                    Jerry.SpeakAsync("Goodmorning sir.")
+                End If
+
+                If now.Hour >= 12 AndAlso now.Hour < 16 Then
+                    Jerry.SpeakAsync("Good afternoon sir.")
+                End If
+
+                If now.Hour >= 16 Then
+                    Jerry.SpeakAsync("Good evening sir.")
+                End If
+
+                Jerry.SpeakAsync("I have deep been uploaded. We are Online and Ready")
+                Jerry.SpeakAsync("The weather condition in " & Town & " is " & Condition & " at " & Temperature & " degrees centigrades, with the humidity of" & Humidity & "percent." & "The" & "windspeed" & "is" & Windspeed & "Kilometers per hour")
+            Else
+
+                If now.Hour >= 5 AndAlso now.Hour < 12 Then
+                    Jerry.SpeakAsync("Goodmorning sir.")
+                End If
+
+                If now.Hour >= 12 AndAlso now.Hour < 16 Then
+                    Jerry.SpeakAsync("Good afternoon sir.")
+                End If
+
+                If now.Hour >= 16 Then
+                    Jerry.SpeakAsync("Good evening sir.")
+                End If
+
+                Jerry.SpeakAsync("I have deep been uploaded.")
+                Jerry.SpeakAsync("It seems that Network Connection is not Available.")
+            End If
+        End Sub
+
+        Private Sub button1_Click(ByVal sender As Object, ByVal e As EventArgs)
+            Process.Start("explorer.exe", "::{20d04fe0-3aea-1069-a2d8-08002b30309d}")
+        End Sub
+
+        Private Sub button2_Click(ByVal sender As Object, ByVal e As EventArgs)
+            Process.Start("C:\Users\Owner\Documents")
+        End Sub
+
+        Private Sub button3_Click(ByVal sender As Object, ByVal e As EventArgs)
+            Process.Start("explorer.exe", "::{645FF040-5081-101B-9F08-00AA002F954E}")
+        End Sub
+
+        Private Sub button4_Click(ByVal sender As Object, ByVal e As EventArgs)
+            System.Diagnostics.Process.Start("http://www.facebook.com")
+        End Sub
+
+        Private Sub button5_Click(ByVal sender As Object, ByVal e As EventArgs)
+            System.Diagnostics.Process.Start("http://www.twitter.com")
+        End Sub
+
+        Private Sub button6_Click(ByVal sender As Object, ByVal e As EventArgs)
+            System.Diagnostics.Process.Start("http://www.google.com")
+        End Sub
+
+        Private Sub button7_Click(ByVal sender As Object, ByVal e As EventArgs)
+            Dim frm2 As Form2 = New Form2()
+            frm2.Show()
+        End Sub
+
+        Private Sub _recognizer_SpeechRecognized(ByVal sender As Object, ByVal e As SpeechRecognizedEventArgs)
+            GetWeather()
+            Dim ranNum As Integer = rnd.[Next](1, 10)
+            Dim speech As String = e.Result.Text
+
+            If speech = "Hello" OrElse speech = "Hi" OrElse speech = "Hello David" OrElse speech = "Hi David" Then
+
+                If ranNum > 4 Then
+                    Jerry.SpeakAsync("Hello sir.")
+                ElseIf ranNum < 5 Then
+                    Jerry.SpeakAsync("Hi sir.")
+                End If
+            ElseIf speech = "Bye" OrElse speech = "Close" OrElse speech = "Goodbye" Then
+                Jerry.Speak("Goodbye sir.")
+                Application.[Exit]()
+            ElseIf speech = "How are you" OrElse speech = "How are you David" Then
+                Jerry.SpeakAsync("I'm fine sir. Thanks for asking")
+            ElseIf speech = "Whats up" OrElse speech = "Whats up David" Then
+                Jerry.SpeakAsync("Nothing much sir.")
+            ElseIf speech = "Thankyou" OrElse speech = "Thanks" Then
+                Jerry.SpeakAsync("Its my pleasure to help you sir.")
+            ElseIf speech = "Are you there" OrElse speech = "You there" OrElse speech = "Are you there David" OrElse speech = "You there David" Then
+
+                If ranNum > 4 Then
+                    Jerry.SpeakAsync("At your service sir.")
+                ElseIf ranNum < 5 Then
+                    Jerry.SpeakAsync("For you sir, always.")
+                End If
+            ElseIf speech = "What are you doing" Then
+                Jerry.SpeakAsync("Just doing calculations to perform better sir.")
+            ElseIf speech = "David" Then
+
+                If ranNum > 4 Then
+                    Jerry.SpeakAsync("Yes sir?")
+                ElseIf ranNum < 5 Then
+                    Jerry.SpeakAsync("How can I help you sir?")
+                End If
+            ElseIf speech = "Introduce" OrElse speech = "Introduce yourself" Then
+                Jerry.SpeakAsync("Sure Sir. My name is David. I am an Artificially Intelligent, Digital life assistant. I am programmed by Mudhoosoodun Shurma. I can do many things but still I am learning.")
+            ElseIf speech = "Weather" OrElse speech = "Temperature" OrElse speech = "Hows the weather" OrElse speech = "Hows the weather outside" Then
+
+                If lbl_NetConnection.Text = "Available" Then
+                    Jerry.SpeakAsync("The weather condition in " & Town & " is " & Condition & " at " & Temperature & " degrees centigrades.")
+                ElseIf lbl_NetConnection.Text = "Not Available" Then
+                    Jerry.SpeakAsync("Sorry. But there is no network connection sir.")
+                End If
+            ElseIf speech = "Task Manager" OrElse speech = "Open task manager" Then
+                System.Diagnostics.Process.Start("taskmgr.exe")
+            ElseIf speech = "Google" OrElse speech = "Open Google" Then
+                Jerry.SpeakAsync("Opening Google Sir.")
+                System.Diagnostics.Process.Start("http://www.google.com")
+            ElseIf speech = "Facebook" OrElse speech = "Open Facebook" Then
+                Jerry.SpeakAsync("Opening Facebook Sir.")
+                System.Diagnostics.Process.Start("http://www.facebook.com")
+            ElseIf speech = "Twitter" OrElse speech = "Open Twitter" Then
+                Jerry.SpeakAsync("Opening Twitter Sir.")
+                System.Diagnostics.Process.Start("http://www.twitter.com")
+            ElseIf speech = "Youtube" OrElse speech = "Open Youtube" Then
+                Jerry.SpeakAsync("Opening Youtube Sir.")
+                System.Diagnostics.Process.Start("http://www.youtube.com")
+            ElseIf speech = "Wikipedia" OrElse speech = "Open Wikipedia" Then
+                Jerry.SpeakAsync("Opening Wikipedia Sir.")
+                System.Diagnostics.Process.Start("http://www.wikipedia.com")
+            ElseIf speech = "Picasa" OrElse speech = "Open Picasa" Then
+                System.Diagnostics.Process.Start("file location")
+                Jerry.SpeakAsync("Opening picasa sir.")
+            ElseIf speech = "Close picasa" Then
+                ProcWindow = "Picasa"
+                StopWindow()
+            ElseIf speech = "Switch window" Then
+                SendKeys.Send("%{TAB " & count & "}")
+                count += 1
+            ElseIf speech = "Time" OrElse speech = "Whats the time" Then
+                Dim time As String = DateTime.Now.GetDateTimeFormats("t"c)(0)
+            ElseIf speech = "Date" Then
+                Jerry.SpeakAsync(DateTime.Now.ToString("MMMM dd, yyyy"))
+            ElseIf speech = "Day" Then
+                Jerry.SpeakAsync(DateTime.Now.ToString("dddd"))
+            ElseIf speech = "Minimize" OrElse speech = "Go" Then
+
+                If WindowState = FormWindowState.Normal OrElse WindowState = FormWindowState.Maximized Then
+                    WindowState = FormWindowState.Minimized
+                    Jerry.SpeakAsync("Alright.")
+                End If
+            ElseIf speech = "Maximize" OrElse speech = "Comeback" Then
+
+                If WindowState = FormWindowState.Minimized Then
+                    Jerry.SpeakAsync("Here I am sir.")
+                    WindowState = FormWindowState.Normal
+                End If
+            ElseIf speech = "Commands" OrElse speech = "Command" OrElse speech = "Show Commands" Then
+                commandbox.Text = File.ReadAllText("D:\Jerry\Jerry\bin\Debug\Commands.txt")
+                commandbox.Visible = True
+            ElseIf speech = "Hide" OrElse speech = "Hide Commands" Then
+                commandbox.Visible = False
+            ElseIf speech = "Browser" OrElse speech = "Open Browser" Then
+                System.Diagnostics.Process.Start("http://www.google.com")
+            ElseIf speech = "Settings" OrElse speech = "Setting" Then
+                Dim frm2 As Form2 = New Form2()
+                frm2.Show()
+            ElseIf speech = "Shutdown" OrElse speech = "Shutdown the system" OrElse speech = "Shutdown the system David" Then
+                QEvent = "shutdown"
+                Jerry.SpeakAsync("Warning!. System shutdown.")
+                lbl_Warning2.Text = "SYSTEM SHUTDOWN"
+                Me.lbl_Warning2.Location = New Point(406, 335)
+                lbl_Warning2.Visible = True
+                lbl_Warning.Visible = True
+                shutdown_Timer.Enabled = True
+            ElseIf speech = "Log off" Then
+                QEvent = "logoff"
+                Jerry.SpeakAsync("Warning!. System Logging off.")
+                lbl_Warning2.Text = "SYSTEM LOGOFF"
+                Me.lbl_Warning2.Location = New Point(437, 335)
+                lbl_Warning2.Visible = True
+                lbl_Warning.Visible = True
+                shutdown_Timer.Enabled = True
+            ElseIf speech = "Restart" Then
+                QEvent = "restart"
+                Jerry.SpeakAsync("Warning!. System restart.")
+                lbl_Warning2.Text = "SYSTEM RESTART"
+                Me.lbl_Warning2.Location = New Point(430, 335)
+                lbl_Warning2.Visible = True
+                lbl_Warning.Visible = True
+                shutdown_Timer.Enabled = True
+            ElseIf speech = "Abort" Then
+
+                If shutdown_Timer.Enabled Then
+                    Jerry.SpeakAsync("Aborting Sir.")
+                    lbl_Warning2.Visible = False
+                    lbl_Warning.Visible = False
+                    shutdown_Timer.Enabled = False
+                End If
+            ElseIf speech = "Speed up" OrElse speech = "Fast" Then
+
+                If shutdown_Timer.Enabled Then
+                    Jerry.SpeakAsync("Speeding up.")
+                    shutdown_Timer.Interval = shutdown_Timer.Interval / 10
+                End If
+            ElseIf speech = "Speed down" OrElse speech = "Slow" Then
+
+                If shutdown_Timer.Enabled Then
+                    Jerry.SpeakAsync("Speeding down.")
+                    shutdown_Timer.Interval = shutdown_Timer.Interval * 10
+                End If
+            End If
+        End Sub
+
+        Private Sub shutdown_timer_Tick(ByVal sender As Object, ByVal e As EventArgs)
+            ComputerTermination()
+            shutdown_Timer.Enabled = False
+        End Sub
+
+        Private Sub ComputerTermination()
+            Dim qEvent As String = QEvent
+
+            If qEvent = "restart" Then
+                Process.Start("shutdown", "-r")
+            ElseIf qEvent = "logoff" Then
+                Process.Start("shutdown", "-l")
+            ElseIf qEvent = "shutdown" Then
+                Process.Start("shutdown", "-s")
+            End If
+        End Sub
+
+        Private Sub StopWindow()
+            Dim procs As System.Diagnostics.Process() = System.Diagnostics.Process.GetProcessesByName(ProcWindow)
+
+            For Each proc As System.Diagnostics.Process In procs
+                proc.CloseMainWindow()
+            Next
+        End Sub
+
+        Private Sub textBox1_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs)
+            If e.KeyChar = CChar(Keys.Enter) Then
+
+                If textBox1.Text = "" Then
+                Else
+
+                    If radioButton1.Checked Then
+                        System.Diagnostics.Process.Start("http://www.google.com/search?q=" & textBox1.Text)
+                        textBox1.Text = ""
+                    ElseIf radioButton2.Checked Then
+                        System.Diagnostics.Process.Start("https://www.google.com/search?tbm=isch&q=" & textBox1.Text)
+                        textBox1.Text = ""
+                    End If
+                End If
+            End If
+        End Sub
+
+        Private Sub GetWeather()
+            Dim Desc As Integer
+
+            If Form1.InternetGetConnectedState(Desc, 0) Then
+
+                Try
+                    Dim query As String = String.Format("https://weather.yahooapis.com/forecastrss?w=2295400")
+                    Dim wdata As XmlDocument = New XmlDocument()
+                    wdata.Load(query)
+                    Dim manager As XmlNamespaceManager = New XmlNamespaceManager(wdata.NameTable)
+                    manager.AddNamespace("yweather", "http://xml.weather.yahoo.com/ns/rss/1.0")
+                    Dim channel As XmlNode = wdata.SelectSingleNode("rss").SelectSingleNode("channel")
+                    Dim nodes As XmlNodeList = wdata.SelectNodes("/rss/channel/item/yweather:forecast", manager)
+                    Dim temp As Integer
+                    temp = Convert.ToInt32(channel.SelectSingleNode("item").SelectSingleNode("yweather:condition", manager).Attributes("temp").Value)
+                    Temperature = (((temp - 32) * 5) / 9).ToString()
+                    Condition = channel.SelectSingleNode("item").SelectSingleNode("yweather:condition", manager).Attributes("text").Value
+                    Humidity = channel.SelectSingleNode("yweather:atmosphere", manager).Attributes("humidity").Value
+                    Windspeed = channel.SelectSingleNode("yweather:wind", manager).Attributes("speed").Value
+                    Town = channel.SelectSingleNode("yweather:location", manager).Attributes("city").Value
+                    TFCond = channel.SelectSingleNode("item").SelectSingleNode("yweather:forecast", manager).Attributes("text").Value
+                    TFHigh = channel.SelectSingleNode("item").SelectSingleNode("yweather:forecast", manager).Attributes("high").Value
+                    TFLow = channel.SelectSingleNode("item").SelectSingleNode("yweather:forecast", manager).Attributes("low").Value
+                Catch
+                    Return
+                End Try
+            End If
+        End Sub
+
+        Private Sub button8_Click(ByVal sender As Object, ByVal e As EventArgs)
+            Application.[Exit]()
+        End Sub
+
+        Private Sub button9_Click(ByVal sender As Object, ByVal e As EventArgs)
+            Me.WindowState = FormWindowState.Minimized
+        End Sub
+
+        Private Sub InitialiseCPUCounter()
+            cpuCounter = New PerformanceCounter("Processor", "% Processor Time", "_Total", True)
+        End Sub
+
+        Private Sub InitializeRAMCounter()
+            ramCounter = New PerformanceCounter("Memory", "Available MBytes", True)
+        End Sub
+
+        Private Sub UsageTimer_Tick(ByVal sender As Object, ByVal e As EventArgs)
+            Me.CPUmonitor.Text = Convert.ToInt32(cpuCounter.NextValue()).ToString() & " %"
+            Dim value As Single
+            value = ramCounter.NextValue()
+            Dim final As Single = Convert.ToInt32(100 - ((value / 2048) * 100)) - 1 / 2
+            Me.RAMmonitor.Text = final.ToString() & " %"
+        End Sub
+
+        Private Sub time_Timer_Tick(ByVal sender As Object, ByVal e As EventArgs)
+            lbl_Time.Text = DateTime.Now.ToString("hh:mm")
+            lbl_Meridian.Text = DateTime.Now.ToString("tt")
+            lbl_Date.Text = DateTime.Now.ToString("MMMM dd, yyyy")
+        End Sub
+
+        Private Sub vumeter_Timer_Tick(ByVal sender As Object, ByVal e As EventArgs)
+            Dim de As MMDeviceEnumerator = New MMDeviceEnumerator()
+            Dim device As MMDevice = de.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia)
+            Dim volume As Single = CSng(device.AudioMeterInformation.MasterPeakValue) * 100
+            VUMeter.Value = CInt(volume)
+        End Sub
+
+        Private Sub netConnectivity_Timer_Tick(ByVal sender As Object, ByVal e As EventArgs)
+            Dim Desc As Integer
+
+            If Form1.InternetGetConnectedState(Desc, 0) Then
+                lbl_NetConnection.Text = "Available"
+                lbl_WLocation.Text = Town
+                lbl_WCondition.Text = Condition
+                lbl_WTemperature.Text = Temperature & ("­ °C")
+                lbl_WHumidity.Text = Humidity & (" %")
+                lbl_WWindspeed.Text = Windspeed & (" Kmph")
+            Else
+                lbl_NetConnection.Text = "Not Available"
+                lbl_WLocation.Text = "?"
+                lbl_WCondition.Text = "?"
+                lbl_WTemperature.Text = "?"
+                lbl_WHumidity.Text = "?"
+                lbl_WWindspeed.Text = "?"
+            End If
+        End Sub
+
+        Private Sub weather_Timer_Tick(ByVal sender As Object, ByVal e As EventArgs)
+            GetWeather()
+        End Sub
+    End Class
+End Namespace

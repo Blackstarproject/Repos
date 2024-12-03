@@ -1,0 +1,178 @@
+using SpeechLib;
+using System;
+using System.Windows.Forms;
+
+namespace SAPITextFromVoice
+{
+    class Program
+    {
+        // Initialize variables needed throughout this code
+        static ISpeechRecoGrammar grammar; // Declare the grammar
+        static SpFileStream FileStream; // Declare the voice recognition input file stream
+        static string AudioPath = null; // Declare directory path to wav file
+        static string GrammarPath = null; // Declare directory path to grammar file
+
+        static void Main(string[] args)
+        {
+            // Initialize string variable for storing the text of interest
+            string MyText = "the rain in spain";
+
+            // Store path to speech grammar XML file
+            //GrammarPath = @"C:\Reco\MyGrammar.xml";
+
+            // Store path to voice recognition input wav file
+            AudioPath = @"C:\Reco\MyAudio.wav";
+
+            TextToWav(AudioPath, MyText);
+
+            try // Attempt the following code
+            {
+                // Open the created wav in a new FileStream
+                FileStream = new SpFileStream(); // Create new instance of SpFileStream
+                FileStream.Open(AudioPath, SpeechStreamFileMode.SSFMOpenForRead, true); // Open the specified file in the FileStream for reading with events enabled
+
+                // Create speech recognizer and associated context
+                SpInprocRecognizer MyRecognizer = new SpInprocRecognizer(); // Create new instance of SpInprocRecognizer
+                SpInProcRecoContext RecoContext = (SpInProcRecoContext)MyRecognizer.CreateRecoContext(); // Initialize the SpInProcRecoContext (in-process recognition context)
+
+                // Set the voice recognition input as the FileStream
+                MyRecognizer.AudioInputStream = FileStream; // This will internally "speak" the wav file for input into the voice recognition engine
+
+                // Set up recognition event handling
+                RecoContext.Recognition += new _ISpeechRecoContextEvents_RecognitionEventHandler(RecoContext_Recognition); // Register for successful voice recognition events
+                RecoContext.FalseRecognition += new _ISpeechRecoContextEvents_FalseRecognitionEventHandler(RecoContext_FalseRecognition); // Register for failed (low confidence) voice recognition events
+                RecoContext.Hypothesis += new _ISpeechRecoContextEvents_HypothesisEventHandler(RecoContext_Hypothesis); // Register for voice recognition hypothesis events
+                RecoContext.EndStream += new _ISpeechRecoContextEvents_EndStreamEventHandler(RecoContext_EndStream); // Register for end of file stream events
+
+                // Set up the grammar
+                grammar = RecoContext.CreateGrammar(); // Initialize the grammar object
+                //grammar.CmdLoadFromFile(GrammarPath, SpeechLoadOption.SLODynamic); // Load custom XML grammar file
+                //grammar.CmdSetRuleIdState(0, SpeechRuleState.SGDSActive); // Activate the loaded grammar
+                grammar.DictationLoad("", SpeechLoadOption.SLOStatic); // Load blank dictation topic into the grammar
+                grammar.DictationSetState(SpeechRuleState.SGDSActive); // Activate dictation grammar
+            }
+            catch // Handle exceptions in above code
+            {
+                Console.WriteLine("Error during voice recognition setup");
+                return; // Stop executing the code
+            }
+
+            Application.Run(); // Starts a standard application message loop on the current thread
+
+            Console.WriteLine("done");
+            Console.ReadLine();
+        }
+
+        // Function for converting text to a voiced wav file via text-to-speech
+        public static bool TextToWav(string FilePath, string text)
+        {
+            try // Attempt the following code
+            {
+                if (System.IO.File.Exists(FilePath) == true) // Check if voice recognition wav file already exists
+                    System.IO.File.Delete(FilePath); // Delete existing voice recognitoin wav file
+                SpFileStream stream = new SpFileStream(); // Create new SpFileStream instance
+                stream.Format.Type = SpeechAudioFormatType.SAFT48kHz16BitStereo; // Set the file stream audio format
+                stream.Open(FilePath, SpeechStreamFileMode.SSFMCreateForWrite, true); // Open the specified file for writing with events enabled
+
+                SpVoice voice = new SpVoice(); // Create new SPVoice instance
+                voice.Volume = 100; // Set the volume level of the text-to-speech voice
+                voice.Rate = -2; // Set the rate at which text is spoken by the text-to-speech engine
+                string NameAttribute = "Name = " + "Microsoft Anna";
+                voice.Voice = voice.GetVoices(NameAttribute).Item(0);
+                //voice.Speak(text);
+                voice.AudioOutputStream = stream; // Send the audio output to the file stream
+                voice.Speak(text, SpeechVoiceSpeakFlags.SVSFDefault); // Internally "speak" the inputted text (which records it in the wav file)
+
+                stream.Close(); // Close the file stream
+                return true; // Send "true" back to calling code line
+            }
+            catch // Handle exceptions in above code
+            {
+                Console.WriteLine("Error during wav file creation");
+                return false; // Send "false" back to calling code line
+            }
+        }
+
+        // Event handler for successful (higher confidence) voice recognition
+        public static void RecoContext_Recognition(int StreamNumber, object StreamPosition, SpeechRecognitionType RecognitionType, ISpeechRecoResult Result)
+        {
+            RecognitionProcessing(Result, true); // Process the voice recognition result
+        }
+
+        // Event handler for false (low confidence) voice recognition
+        public static void RecoContext_FalseRecognition(int StreamNumber, object StreamPosition, ISpeechRecoResult Result)
+        {
+            RecognitionProcessing(Result, false); // Process the voice recognition result
+        }
+
+        // Event handler for voice recognition hypotheses
+        public static void RecoContext_Hypothesis(int StreamNumber, object StreamPosition, ISpeechRecoResult Result)
+        {
+            float confidence = Result.PhraseInfo.Elements.Item(0).EngineConfidence;
+            Console.WriteLine(("Hypothesis = " + Result.PhraseInfo.GetText() + " (" + Decimal.Round(Convert.ToDecimal(confidence), (confidence > 0.01 ? 3 : 4)) + ")")); // Output info to console
+        }
+
+        // Event handler for reaching the end of an audio input stream
+        public static void RecoContext_EndStream(int StreamNumber, object StreamPosition, bool StreamReleased)
+        {
+            // Clean up now that voice recognition is complete
+
+            Console.WriteLine("--- END OF STREAM ---"); // Output info to the console
+
+            try // Attempt the following code
+            {
+                //grammar.CmdSetRuleIdState(0, SpeechRuleState.SGDSInactive); // Deactivate the loaded grammar
+                grammar.DictationSetState(SpeechRuleState.SGDSInactive); // Deactivate dictation grammar
+                FileStream.Close(); // Close the input FileStream
+
+                Application.ExitThread(); // Terminates the message loop on the current thread
+            }
+            catch // Handle exceptions in above code
+            {
+                Console.WriteLine("Error during cleanup process");
+            }
+        }
+
+        // Function for processing voice recognition results
+        public static void RecognitionProcessing(ISpeechRecoResult Result, bool RecoType)
+        {
+            try // Attempt the following code
+            {
+                string RecognizedText = Result.PhraseInfo.GetText().Trim(); // Store recognized text    
+                float confidence = Result.PhraseInfo.Elements.Item(0).EngineConfidence; // Get confidence of voice recognition result
+                decimal RecognitionConfidence = Decimal.Round(Convert.ToDecimal(confidence), (confidence > 0.01 ? 3 : 4)); // Calculate confidence of voice recognition result convert to decimal, and round the result
+                Console.WriteLine((RecoType == false ? "false " : "") + "recognition = " + RecognizedText + " (" + RecognitionConfidence + ")"); // Output info to the console
+                GetPhonemes(Result); // Retrieve SAPI phonemes from recognized words
+            }
+            catch // Handle exceptions in above code
+            {
+                Console.WriteLine("Error during processing of recognition result");
+            }
+        }
+
+        // Function for extracting SAPI phonemes from voice recognition results
+        public static void GetPhonemes(ISpeechRecoResult Result)
+        {
+            try // Attempt the following code
+            {
+                SpPhoneConverter MyPhoneConverter = new SpPhoneConverter(); // Create new SPPhoneConverter instance
+                MyPhoneConverter.LanguageId = 1033; // Set the phone converter's language (English = 1033)
+                string SAPIPhonemesRaw = null; // Initialize string for storing raw SAPI phoneme data
+                string SAPIPhonemes = null; // Initialize string for storing delimited SAPI phoneme data
+                int i = 1; // Initialize integer for tracking phoneme count
+
+                foreach (ISpeechPhraseElement MyPhrase in Result.PhraseInfo.Elements) // Loop through each element of the recognized text
+                {
+                    SAPIPhonemesRaw += " " + MyPhoneConverter.IdToPhone(MyPhrase.Pronunciation); // Build string of SAPI phonemes extracted from the recognized text
+                    SAPIPhonemes += (i++ > 1 ? " - " : " ") + MyPhoneConverter.IdToPhone(MyPhrase.Pronunciation); // Build string of SAPI phonemes extracted from the recognized text, delimited by "-"
+                }
+
+                Console.WriteLine("Phonemes = " + SAPIPhonemes.Trim());
+            }
+            catch // Handle exceptions in above code
+            {
+                Console.WriteLine("Error during phoneme extraction");
+            }
+        }
+    }
+}

@@ -1,0 +1,99 @@
+Contrary to what a lot of people believe, there are actually several ways to do this. Some of them are common, some rarely seen. Some of them are weak, some strong. It all depends on how you do it.
+
+Let's go through a collection of them:
+
+1. Pre-NT RegisterServiceProcess trick
+Windows 9x, and other pre-NT operating systems, had an undocumented API in kernel32.dll called RegisterServiceProcess, 
+which (as the name suggests) registers the process as a system service. Once a process had called this function, 
+the operating system considered it critical and would not allow task manager to kill it. 
+This function was removed when NT came around, so it doesn't work on XP or higher.
+
+2. Process naming tricks
+Back in WinXP, the Task Manager executable contained a hard-coded list of process names that it would refuse to kill, 
+instead displaying a message like the one you mentioned. These basically covered the critical system services such as smss.exe and rpcss.exe. 
+The problem was that the path isn't checked, so any other executable with the same name would result in an un-killable process. 
+This trick doesn't prevent the process from being killed, per se, but rather stops the Windows XP Task Manager from being able to kill the process. 
+It is still possible to use another tool to kill the process.
+
+3. Keep-alive processes
+These are by far the most common. Two processes are created, and repeatedly check for the other's existence. 
+If one is killed, the other resurrects it. This doesn't stop you from killing the process really, but it does make it annoying to 
+stop the process from coming back.
+
+Task Manager includes an option to kill the process tree, which allows you to kill a process and all child processes, 
+which may help fix this issue. When a process is created in Windows, the OS keeps track of the process ID that created it. 
+Kill process tree iterates through all processes and looks for those who have a parent ID equal to the process ID that you're killing. 
+Since keep-alive processes usually work on a repeated polling, you can kill both processes before they notice anything went wrong.
+
+A defence against this is to create a dummy process that spawns the keep-alive process, 
+then have that dummy process exit. The main process passes its ID to the dummy process, 
+and the dummy process passes its ID to the keep-alive process, but the chain is broken when the dummy process exits. 
+This leaves both the primary and keep-alive processes running, but makes it impossible to use Task Manager's kill process tree function. 
+Instead, you'd have to write a script to kill them off, or use a tool that allows you to kill multiple processes simultaneously.
+
+4. User-mode hooks via loaded DLLs
+It is possible to inject a DLL into a running process. In fact, Windows offers a feature to have any DLL loaded into all processes that import user32.dll, 
+for the purposes of extensibility. This method is called AppInit DLLs. Once a DLL is injected, it may manipulate the memory of the process. 
+It is then possible to overwrite the values of certain function pointers such that the call is redirected to a stub routine, 
+which then calls the target function. That stub routine may be used to filter or manipulate the parameters and return values of a function call. 
+This technique is called hooking, and it can be very powerful. In this case, it would be possible to inject a DLL into running processes that hooks 
+OpenProcess and TerminateProcess to ensure that no application can gain a handle to your process, or terminate it. This somewhat results in an arms-race, 
+since alternative user-mode APIs can be used to terminate processes, and it's difficult to hook and block them all, especially when we consider 
+undocumented APIs.
+
+5. User-mode hooks via injected threads
+This trick works the same as with DLLs, except no DLL file is needed. A handle to the target process is created, 
+some memory is allocated within it via VirtualAllocEx, code and data is copied into the memory block via WriteProcessMemory, 
+and a thread is created in the process via CreateRemoteThread. This results in some foreign code being executed within a target process, 
+which may then instigate various hooks to prevent a process being killed.
+
+6. Kernel-mode call hooks
+In the kernel, there's a special structure called the System Service Dispatch Table (SSDT), which maps function IDs from user-mode calls into 
+function pointers in to kernel APIs. This table is used to transition between user-mode and kernel-mode. If a malicious driver can be loaded, 
+it may modify the SSDT to cause its own function to be executed, instead of the proper API. This is a kernel-mode hook, which constitutes a rootkit. 
+Essentially it is possible to pull the wool over the OS's eyes by returning bogus data from calls. 
+In fact, it is possible to make the process not only un-killable, but also invisible. 
+One issue with this on x64 builds is that the SSDT is protected by Kernel Patch Protection (KPP). 
+It is possible to disable KPP, but this has far-reaching consequences that may make it difficult to develop a rootkit.
+
+7. Direct kernel object manipulation (DKOM)
+This trick also involves loading a malicious driver on the OS, but doesn't require alteration of the SSDT. 
+Processes on the system are stored as EPROCESS structures in the kernel. Keep in mind that this structure is 
+entirely version-dependant and is only partially documented by Microsoft, so reverse engineering is required 
+across multiple target versions in order to make sure that the code doesn't attempt to read the wrong pointers or data. 
+However, if you can successfully locate and enumerate through EPROCESS structures in the kernel, it is possible to manipulate them.
+
+Each entry in the process list has an FLink and BLink pointer, which point to the next and previous processes in the list. 
+If you identify your target process and make its FLink and BLink pointers point back to themselves, and the FLink and BLink of its 
+siblings point to each other, the OS simply skips over your process when doing any housekeeping operations, e.g. killing processes. 
+This trick is called unlinking. Not only does this render the process invisible to the user, but it also prevents all user-mode APIs 
+from targeting the process unless a handle to the process was generated before it was unlinked. This is a very powerful rootkit technique, 
+especially because it's difficult to recover from.
+
+8. Debugger tricks
+This is a pretty cool trick that I've yet to see in the wild, but it works quite well. The Windows debugger API allows any process to debug another, 
+as long as it has the permissions to do so. If you use the debugger API, it is possible to place a process in a "debugged" state. 
+If this process contains a thread that is currently halted by a debugger, the process cannot be killed by Windows, 
+because proper thread control cannot be guaranteed during termination when the thread is blocked. Of course, if you kill the debugger, 
+the process stops being debugged and either closes or crashes. However, it is sometimes possible to produce a situation where a chain 
+of processes exist that debug each other in a loop. If each process halts a dummy thread in the next, none can be killed. Note that it 
+is possible for a power user to manually kill other threads within the process, rendering it useless, but it still won't be killed.
+
+9. Windows 8 DRM
+This is a new one I've only heard of recently, but I don't know much about it. There was a bit of a rumour going around on Twitter about it, 
+and I've seen snippets here and there on various technical sites, but I've yet to see any concrete research. I think it's still early days. 
+Essentially, the story is that Windows 8 has a mechanism that allows "trusted providers" to register processes as DRM critical, 
+preventing them from being killed or manipulated by the user. Some people have speculated that the mechanism for checking trusted providers is weak, 
+and may be open to attack.< - Looks like this one was bogus. So much for the rumor mill!
+
+Update: Harry Johnston pointed out in the comments that Windows 8.1 introduces protected services, which are designed to be used by AV and DRM to 
+protect against being manipulated or attacked by lower-privileged code on the system.
+
+10. Tool manipulation
+This one has probably been used a lot in the wild, but I've never seen it done properly. Essentially this trick involves targeting specific tools, e.g. 
+Task Manager, by editing the executables on disk in a way that alters functionality. This is very similar to the user-mode hook tricks I mentioned earlier, 
+but in this case they persist on disk and have wider-reaching consequences than simple API hooking. Of course, one issue is that 
+Windows File Protection (WFP) prevents alteration of certain critical system files, including the task manager. Amusingly, 
+though, it is possible to alter the default task manager executable path via the registry. So, instead of messing with the task manager executable file, 
+just dump your own version somewhere and make the OS use it.
+

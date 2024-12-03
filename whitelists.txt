@@ -1,0 +1,46 @@
+   Private Sub KillProcess()
+        Dim processWhitelist() As String = {"calc", "notepad", "explorer", "svchost", "wininit", "MpCopyAccelerator", "SearchFilterHost", "DDVDataCollector",
+            "PresentationFontCache", "DDVCollectorSvcApi", "jhi_service", "sqlwriter", "winlogon", "fontdvhost", "dasHost", "RtkAudUService64", "WUDFHost",
+            "DellSupportAssistRemedationService", "DDVRulesProcessor", "csrss", "NisSrv", "RstMwService", "dwm", "uhssvc", "Famitrfc", "SecurityHealthService",
+            "igfxCUIService", "StandardCollector.Service", "MsMpEng", "Dsapi", "WavesSysSvc64", "VBCSCompiler", "MicrosoftSearchBing", "IntelCpHDCPSvc",
+            "MoUsoCoreWorker", "ServiceShell", "esif_uf", "MSBuild", "IntelCpHeciSvc", "LMS", "SupportAssistAgent", "opera", "chrome", "Memory Compression",
+            "WmiPrvSE", "Registry", "conhost", "spoolsv", "Isass", "OfficeClickToRun", "SearchProtocolHost", "smss", "services", "ctfmon", "IntelAudioService",
+            "smartscreen", "wlanext", "OneApp.IGCC", "SgrmBroker", "TabTip", "SearchIndexer", "Dell.D3.WinSvc", "System", "Unsecapp", "Idle", ""}
+        Dim pathWhitelist() As String = {"C:\"}
+        For Each proc In Process.GetProcesses
+            Dim s1 = GetMainModuleFilepath(proc.Id)
+            If Not IsNothing(s1) AndAlso pathWhitelist.Any(Function(s) s1.StartsWith(s)) Then
+                If processWhitelist.Contains(proc.ProcessName) Then
+                    ' MsgBox(proc.ProcessName & " is found in whitelist.")
+                End If
+            Else
+                MsgBox(proc.ProcessName & " is NOT found in whitelist.")
+            End If
+        Next
+
+        ' For Each proc As Process In Process.GetProcesses
+        'If proc.ProcessName = "notepad" Then
+        'If proc.Responding = False Then
+        '' attempt to kill the process
+        'proc.Kill()
+
+        ' try to start it again
+        'Process.Start(proc.StartInfo)
+        'End If
+        'End If
+        'Next
+
+    End Sub
+
+    Private Function GetMainModuleFilepath(processId As Integer) As String
+        Dim wmiQueryString As String = "SELECT ProcessId, ExecutablePath FROM Win32_Process WHERE ProcessId = " & processId
+        Using searcher = New ManagementObjectSearcher(wmiQueryString)
+            Using results = searcher.[Get]()
+                Dim mo As ManagementObject = results.Cast(Of ManagementObject)().FirstOrDefault()
+                If mo IsNot Nothing Then
+                    Return DirectCast(mo("ExecutablePath"), String)
+                End If
+            End Using
+        End Using
+        Return Nothing
+    End Function

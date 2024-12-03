@@ -1,0 +1,207 @@
+Power Options:
+
+Imports System.Management
+Imports System.Runtime.InteropServices
+Imports Microsoft.Win32
+
+  Private Shared GUID_SLEEP_SUBGROUP As Guid = New _
+      Guid("238c9fa8-0aad-41ed-83f4-97be242c8f20")
+   Private Shared GUID_HIBERNATEIDLE As Guid = New _
+      Guid("9d7815a6-7ee4-497e-8888-515a05f02364")
+
+   <DllImport("powrprof.dll")>
+   Private Shared Function PowerGetActiveScheme(ByVal _
+      UserRootPowerKey As IntPtr, ByRef ActivePolicyGuid _
+      As IntPtr) As UInteger
+   End Function
+
+   <DllImport("powrprof.dll")>
+   Private Shared Function PowerReadACValue(ByVal RootPowerKey _
+      As IntPtr, ByRef SchemeGuid As Guid, ByRef _
+      SubGroupOfPowerSettingGuid As Guid, ByRef PowerSettingGuid _
+      As Guid, ByRef Type As Integer, ByRef Buffer As Integer, _
+      ByRef BufferSize As UInteger) As UInteger
+   End Function
+
+ Private Sub button1_Click(sender As Object, e As EventArgs) _
+         Handles button1.Click
+
+      Dim ActiveScheme As IntPtr = IntPtr.Zero
+      PowerGetActiveScheme(IntPtr.Zero, ActiveScheme)
+
+      Dim ActivePolicy As Guid = Marshal.PtrToStructure(Of Guid) _
+         (ActiveScheme)
+
+      Dim Type As Integer = 0
+      Dim Buffer As Integer = 0
+      Dim BufferSize As UInteger = 4UI
+
+      PowerReadACValue(IntPtr.Zero, ActivePolicy, _
+         GUID_SLEEP_SUBGROUP, GUID_HIBERNATEIDLE, Type, Buffer, _
+         BufferSize)
+
+      MessageBox.Show($"Hibernate after {Buffer} seconds.")
+
+   End Sub
+
+ Private Sub button2_Click(sender As Object, e As EventArgs) _
+         Handles button2.Click
+
+      Dim Seconds As Integer = 0
+
+      Dim HKLM As RegistryKey = Registry.LocalMachine
+
+      Dim ActivePlan As String = "SOFTWARE\Microsoft\Windows\ _
+         CurrentVersion\Explorer\ControlPanel\NameSpace\ _
+         {025A5937-A6BE-4686-A844-36FE4BEC8B6D}"
+      Dim ActivePreferredPlan As Object = HKLM.OpenSubKey _
+         (ActivePlan).GetValue("PreferredPlan")
+
+      Dim SleepGroup As String = "238c9fa8-0aad-41ed-83f4- _
+         97be242c8f20"
+      Dim Hibernate As String = "9d7815a6-7ee4-497e-8888- _
+         515a05f02364"
+
+      Dim CustomKey As String = $"SYSTEM\CurrentControlSet\ _
+         Control\Power\User\PowerSchemes\" & $" _
+         {ActivePreferredPlan}\{SleepGroup}\{Hibernate}"
+      Dim DefaultKey As String = $"SYSTEM\CurrentControlSet\ _
+         Control\Power\PowerSettings\" & $"{SleepGroup}\ _
+         {Hibernate}\DefaultPowerSchemeValues\ _
+         {ActivePreferredPlan}"
+
+      Dim SettingKey As RegistryKey = HKLM.OpenSubKey(CustomKey, _
+         False)
+
+      If SettingKey IsNot Nothing Then
+
+         Dim result As Object = SettingKey.GetValue _
+            ("ACSettingIndex")
+         If result IsNot Nothing Then Seconds = CInt(result)
+
+      Else
+
+         SettingKey = HKLM.OpenSubKey(DefaultKey, False)
+         Seconds = CInt(SettingKey.GetValue("ProvAcSettingIndex"))
+
+      End If
+
+      MessageBox.Show($"Hibernate after {Seconds} seconds.")
+
+   End Sub
+
+ Private Sub button3_Click(sender As Object, e As EventArgs) _
+         Handles button3.Click
+
+      Dim CIMKey As String = "root\cimv2\power"
+      Dim Query As String = "SELECT * FROM Win32_PowerPlan _
+         WHERE IsActive = True
+
+      Dim Finder As ManagementObjectSearcher = New _
+         ManagementObjectSearcher(CIMKey, Query)
+
+      Dim ActivePlan As ManagementObject = Finder.[Get]().Cast _
+         (Of ManagementObject)().First()
+      Dim PlanID As String = (CStr(ActivePlan.GetPropertyValue _
+         ("InstanceId"))).Split("\"c)(1)
+
+      Dim Hibernate As ManagementObject = ActivePlan.GetRelated _
+         ("Win32_PowerSettingDataIndex").Cast _
+         (Of ManagementObject)().Where(Function(x) _
+         CStr(x.GetPropertyValue("InstanceId")) = $"Microsoft: _
+         PowerSettingDataIndex\{PlanID}\AC\{{9d7815a6-7ee4-497e- _
+         8888-515a05f02364}}").First()
+
+      Dim Value As UInteger = CUInt(Hibernate.GetPropertyValue _
+         ("SettingIndexValue"))
+
+      MessageBox.Show($"Hibernate after {Value} seconds.")
+
+   End Sub
+
+
+
+Battery Settings
+Subgroup GUID: e73a048d-bf27-4f12-9731-8b2076e8891f  (Battery)
+   GUID Alias: SUB_BATTERY
+   Power Setting GUID: 637ea02f-bbcb-4015-8e2c-a1c7b9c0b546
+         (Critical battery action)
+      GUID Alias: BATACTIONCRIT
+      Possible Setting Index: 000
+      Possible Setting Friendly Name: Do nothing
+      Possible Setting Index: 001
+      Possible Setting Friendly Name: Sleep
+      Possible Setting Index: 002
+      Possible Setting Friendly Name: Hibernate
+      Possible Setting Index: 003
+      Possible Setting Friendly Name: Shut down
+   Current AC Power Setting Index: 0x00000002
+   Current DC Power Setting Index: 0x00000002
+
+   Power Setting GUID: 8183ba9a-e910-48da-8769-14ae6dc1170a
+         (Low battery level)
+      GUID Alias: BATLEVELLOW
+      Minimum Possible Setting: 0x00000000
+      Maximum Possible Setting: 0x00000064
+      Possible Settings increment: 0x00000001
+      Possible Settings units: %
+   Current AC Power Setting Index: 0x0000000a
+   Current DC Power Setting Index: 0x0000000a
+
+   Power Setting GUID: 9a66d8d7-4ff7-4ef9-b5a2-5a326ca2a469
+         (Critical battery level)
+      GUID Alias: BATLEVELCRIT
+      Minimum Possible Setting: 0x00000000
+      Maximum Possible Setting: 0x00000064
+      Possible Settings increment: 0x00000001
+      Possible Settings units: %
+   Current AC Power Setting Index: 0x00000005
+   Current DC Power Setting Index: 0x00000005
+Hard Disk Settings
+   Subgroup GUID: 0012ee47-9041-4b5d-9b77-535fba8b1442
+      (Hard disk)
+   GUID Alias: SUB_DISK
+   Power Setting GUID: 6738e2c4-e8a5-4a42-b16a-e040e769756e
+         (Turn off hard disk after)
+      GUID Alias: DISKIDLE
+      Minimum Possible Setting: 0x00000000
+      Maximum Possible Setting: 0xffffffff
+      Possible Settings increment: 0x00000001
+      Possible Settings units: Seconds
+      Current AC Power Setting Index: 0x000004b0
+      Current DC Power Setting Index: 0x000004b0
+Sleep Settings
+   Subgroup GUID: 238c9fa8-0aad-41ed-83f4-97be242c8f20  (Sleep)
+   GUID Alias: SUB_SLEEP
+   Power Setting GUID: 29f6c1db-86da-48c5-9fdb-f2b67b1f44da
+         (Sleep after)
+      GUID Alias: STANDBYIDLE
+      Minimum Possible Setting: 0x00000000
+      Maximum Possible Setting: 0xffffffff
+      Possible Settings increment: 0x00000001
+      Possible Settings units: Seconds
+   Current AC Power Setting Index: 0x00000e10
+   Current DC Power Setting Index: 0x00000000
+
+   Power Setting GUID: 94ac6d29-73ce-41a6-809f-6363ba21b47e
+         (Allow hybrid sleep)
+      GUID Alias: HYBRIDSLEEP
+      Possible Setting Index: 000
+      Possible Setting Friendly Name: Off
+      Possible Setting Index: 001
+      Possible Setting Friendly Name: On
+   Current AC Power Setting Index: 0x00000001
+   Current DC Power Setting Index: 0x00000001
+
+   Power Setting GUID: 9d7815a6-7ee4-497e-8888-515a05f02364
+         (Hibernate after)
+      GUID Alias: HIBERNATEIDLE
+      Minimum Possible Setting: 0x00000000
+      Maximum Possible Setting: 0xffffffff
+      Possible Settings increment: 0x00000001
+      Possible Settings units: Seconds
+   Current AC Power Setting Index: 0x00000000
+   Current DC Power Setting Index: 0x00000000
+
+
+

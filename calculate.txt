@@ -1,0 +1,129 @@
+Imports System.Globalization
+
+Public Class Evo
+#Region "1. Countdown Clock "
+
+    Dim EndDate As Date
+    Private Sub Evo_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim InputFileName, stringReader, DateString, Format As String
+        Dim fileReader As IO.StreamReader
+        Dim StringArray As String()
+        InputFileName = "C:\Users\justin.ross\source\repos\Shell\Shell\EndDate.txt"
+
+        'Open file containing end-date and windows form title bar text.
+        Try
+            fileReader = My.Computer.FileSystem.OpenTextFileReader(InputFileName)
+        Catch exc As IO.FileNotFoundException
+            MessageBox.Show("Can't find file " & InputFileName & ".", "File not found.", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End
+        Catch exc As Exception
+            MessageBox.Show(exc.Message)
+            End
+        End Try
+
+        'Read line of text from input file.
+        stringReader = fileReader.ReadLine()
+
+        'Parse end-date and window form title bar text from stringReader.
+        StringArray = stringReader.Split(New Char() {","})
+        DateString = StringArray(0)
+        Text = StringArray(1)
+
+        'Close end-date file.
+        fileReader.Close()
+
+        'Convert end date & time string to type DateTime.
+        Format = "yyyy-MM-dd HH:mm:ss"
+        If Not Date.TryParseExact(DateString, Format, Nothing,
+                                           DateTimeStyles.None, EndDate) Then
+            MessageBox.Show("Unable to understand date and time from input file. " &
+                            "Format should be yyyy-MM-dd HH:mm:ss,message",
+                              DateString, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End
+        End If
+
+        'Start timer1 so countdown can start.
+        Timer1.Start()
+    End Sub
+
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        Dim StartDate, d As Date
+        Dim Years, Months, Days, Hours, Minutes, Seconds As Integer
+
+        'Starting date is right now.
+        StartDate = Date.Now
+
+        'If end-date and time has been reached, stop timer.
+        If EndDate < StartDate Then
+            Timer1.Stop()
+            Return
+        End If
+
+        'Calculate number of years to end-date.
+        Years = 0
+        d = StartDate
+        While (d <= EndDate)
+            Years += 1
+            d = StartDate.AddYears(Years)
+        End While
+        Years -= 1
+        StartDate = StartDate.AddYears(Years)
+        Label1.Text = Years.ToString("00")
+
+        'Calculate number of months to end-date, exclusive of years from above.
+        Months = 0
+        d = StartDate
+        While (d <= EndDate)
+            Months += 1
+            d = StartDate.AddMonths(Months)
+        End While
+        Months -= 1
+        StartDate = StartDate.AddMonths(Months)
+        Label2.Text = Months.ToString("00")
+
+        'Calculate number of days to end-date, exclusive of years and months from above.
+        Days = 0
+        d = StartDate
+        While (d <= EndDate)
+            Days += 1
+            d = StartDate.AddDays(Days)
+        End While
+        Days -= 1
+        StartDate = StartDate.AddDays(Days)
+        Label3.Text = Days.ToString("00")
+
+        'Calculate number of hours to end-date, exclusive of years, months, and days from above.
+        Hours = 0
+        d = StartDate
+        While (d <= EndDate)
+            Hours += 1
+            d = StartDate.AddHours(Hours)
+        End While
+        Hours -= 1
+        StartDate = StartDate.AddHours(Hours)
+        Label4.Text = Hours.ToString("00")
+
+        'Calculate number of minutes to end-date, exclusive of years, months, days, and hours from above.
+        Minutes = 0
+        d = StartDate
+        While (d <= EndDate)
+            Minutes += 1
+            d = StartDate.AddMinutes(Minutes)
+        End While
+        Minutes -= 1
+        StartDate = StartDate.AddMinutes(Minutes)
+        Label5.Text = Minutes.ToString("00")
+
+        'Calculate number of seconds to end-date, exclusive of years, months, days, hours, and minutes from above.
+        Seconds = 0
+        d = StartDate
+        While (d <= EndDate)
+            Seconds += 1
+            d = StartDate.AddSeconds(Seconds)
+        End While
+        Seconds -= 1
+        Dim unused As Date = StartDate.AddSeconds(Seconds)
+        Label6.Text = Seconds.ToString("00")
+    End Sub
+#End Region
+End Class

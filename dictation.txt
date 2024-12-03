@@ -1,0 +1,237 @@
+Imports SpeechLib
+
+Public Class Form1
+    Const WaveFile = "C:\Reco\MYWAVE.wav"
+
+    Dim WithEvents RC As SpInProcRecoContext
+    Dim Recognizer As SpInprocRecognizer
+    Dim myGrammar As ISpeechRecoGrammar
+    Dim MyFileStream As SpeechLib.SpFileStream
+    Dim MyVoice As SpeechLib.SpVoice
+    Dim MyText As String
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        On Error GoTo EH
+
+        RC = New SpInProcRecoContext
+        Recognizer = RC.Recognizer
+
+        myGrammar = RC.CreateGrammar
+        myGrammar.DictationSetState(SpeechRuleState.SGDSActive)
+        MyVoice = New SpVoice
+        MyVoice.Voice = MyVoice.GetVoices("gender=male").Item(0)
+
+        Dim Category As SpObjectTokenCategory
+        Category = New SpObjectTokenCategory
+        Category.SetId(SpeechStringConstants.SpeechCategoryAudioIn)
+
+        Dim Token As SpObjectToken
+        Token = New SpObjectToken
+        Token.SetId(Category.Default)
+        Recognizer.AudioInput = Token
+
+        TextBox1.Text = "play the eight of clubs"
+
+EH:
+        If Err.Number Then ShowErrMsg()
+    End Sub
+
+    Private Sub Command1_Click(sender As Object, e As EventArgs) Handles Command1.Click
+        MyFileStream = MakeWAVFileFromText(TextBox1.Text, WaveFile)
+        MyFileStream.Open(WaveFile)
+        Recognizer.AudioInputStream = MyFileStream ' ==> produces a runtime error!!!
+    End Sub
+
+    Private Sub RC_Recognition(ByVal StreamNumber As Long, ByVal StreamPosition As Object, ByVal RecognitionType As SpeechLib.SpeechRecognitionType, ByVal Result As SpeechLib.ISpeechRecoResult)
+        On Error GoTo EH
+
+        TextBox2.Text = Result.PhraseInfo.GetText
+
+EH:
+        If Err.Number Then ShowErrMsg()
+    End Sub
+
+    Private Sub ShowErrMsg()
+
+        ' Declare identifiers:
+        Const NL = vbNewLine
+        Dim T As String
+
+        T = "Desc: " & Err.Description & NL
+        T = T & "Err #: " & Err.Number
+        MsgBox(T, vbExclamation, "Run-Time Error")
+        End
+
+    End Sub
+
+    Private Function MakeWAVFileFromText(ByVal strText As String, ByVal strFName As String) As SpFileStream
+
+        On Error GoTo EH
+
+        ' Declare identifiers:
+        Dim FileStream As SpFileStream
+        Dim Voice As SpVoice
+
+        ' Instantiate Voice and FileStream objects:
+        Voice = New SpVoice
+        FileStream = New SpFileStream
+
+        ' Open specified .wav file, set voice output
+        ' to file, and speak synchronously:
+        FileStream.Open(strFName, SpeechStreamFileMode.SSFMCreateForWrite, True)
+        Voice.AudioOutputStream = FileStream
+        Voice.Speak(strText, SpeechVoiceSpeakFlags.SVSFIsXML)
+
+        ' Close file and return reference to FileStream object:
+        FileStream.Close()
+        MakeWAVFileFromText = FileStream
+
+EH:
+        If Err.Number Then ShowErrMsg()
+    End Function
+End Class
+
+
+
+Imports SpeechLib
+Imports System
+Imports System.Windows.Forms
+
+Namespace RecoForm
+    Public Partial Class Form1
+        Inherits Form
+
+        Private listener As SpSharedRecoContext
+        Private grammar As ISpeechRecoGrammar
+
+        Public Sub New()
+            InitializeComponent()
+        End Sub
+
+        Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs)
+        End Sub
+
+        Public ps As String
+
+        Private Sub button1_Click(ByVal sender As Object, ByVal e As EventArgs)
+            If btnListen.Text = "Start Listening" Then
+
+                Try
+                    listener = New SpSharedRecoContext()
+                    listener.Recognition += New _ISpeechRecoContextEvents_RecognitionEventHandler(AddressOf listener_Reco)
+                    grammar = listener.CreateGrammar(0)
+                    grammar.DictationLoad("", SpeechLoadOption.SLOStatic)
+                    grammar.DictationSetState(SpeechRuleState.SGDSActive)
+                    btnListen.Text = "Stop Listening"
+
+                    If ps = "1" Then
+                        listener.[Resume]()
+                        ps = "0"
+                    End If
+
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message)
+                End Try
+            ElseIf btnListen.Text = "Stop Listening" Then
+                listener.Pause()
+                btnListen.Text = "Start Listening"
+
+                If ps = "0" Then
+                    ps = "1"
+                End If
+            End If
+        End Sub
+
+        Public Sub listener_Reco(ByVal StreamNumber As Integer, ByVal StreamPosition As Object, ByVal RecognitionType As SpeechRecognitionType, ByVal Result As ISpeechRecoResult)
+            Dim heard As String = Result.PhraseInfo.GetText(0, -1, True)
+            textBox1.Text += " " & heard
+            Dim MyPhoneConverter As SpPhoneConverter = New SpPhoneConverter()
+            MyPhoneConverter.LanguageId = 1033
+
+            For Each MyPhrase As ISpeechPhraseElement In Result.PhraseInfo.Elements
+                textBox2.Text += " " & MyPhoneConverter.IdToPhone(MyPhrase.Pronunciation)
+            Next
+        End Sub
+    End Class
+End Namespace
+
+
+Imports SpeechLib
+Imports System
+
+Namespace SpeechTest
+    Class Program
+        Private Shared Sub Main(ByVal args As String())
+            Dim MyText As String = "dolphins"
+            Dim WaveFile As String = "C:\Reco\MYWAVE.wav"
+            Dim Recognizer As SpInprocRecognizer
+            Dim RecoContext As SpInProcRecoContext
+            Dim grammar As ISpeechRecoGrammar
+            Dim MyFileStream As ISpeechFileStream
+            Dim MyVoice As ISpeechVoice
+            RecoContext = New SpInProcRecoContext()
+            Recognizer = CType(RecoContext.Recognizer, SpInprocRecognizer)
+            RecoContext.Recognition += New _ISpeechRecoContextEvents_RecognitionEventHandler(AddressOf RecoContext_Recognition)
+            grammar = RecoContext.CreateGrammar()
+            grammar.DictationLoad("", SpeechLoadOption.SLOStatic)
+            grammar.DictationSetState(SpeechRuleState.SGDSActive)
+            Dim Category As SpObjectTokenCategory = New SpObjectTokenCategory()
+            Category.SetId(SpeechStringConstants.SpeechCategoryAudioIn)
+            Dim AudioToken As SpObjectToken = New SpObjectToken()
+            AudioToken.SetId(Category.[Default])
+            Recognizer.AudioInput = AudioToken
+            MyFileStream = New SpFileStream()
+            TextToWave(MyText, WaveFile)
+            MyFileStream.Open(WaveFile, SpeechStreamFileMode.SSFMOpenForRead, True)
+            RecoContext.State = SpeechRecoContextState.SRCS_Enabled
+            Recognizer.State = SpeechRecognizerState.SRSActive
+            Recognizer.AudioInputStream = MyFileStream
+            Console.WriteLine(MyText & " = " & SAPIPhonemes)
+            MyFileStream.Close()
+            Console.ReadLine()
+        End Sub
+
+        Private Shared Sub TextToWave(ByVal text As String, ByVal file As String)
+            Dim fileStream As SpFileStream = New SpFileStream()
+            Dim voice As SpVoice = New SpVoice()
+            fileStream.Open(file, SpeechStreamFileMode.SSFMCreateForWrite, True)
+            voice.AudioOutputStream = fileStream
+            voice.Speak(text)
+            fileStream.Close()
+        End Sub
+
+        Public Shared SAPIPhonemes As String = Nothing
+
+        Public Shared Sub RecoContext_Recognition(ByVal StreamNumber As Integer, ByVal StreamPosition As Object, ByVal RecognitionType As SpeechRecognitionType, ByVal Result As ISpeechRecoResult)
+            Console.WriteLine(Result.ToString())
+            Dim SAPIPhonemes As String = Nothing
+            Dim MyPhoneConverter As SpPhoneConverter = New SpPhoneConverter()
+            MyPhoneConverter.LanguageId = 1033
+
+            For Each MyPhrase As ISpeechPhraseElement In Result.PhraseInfo.Elements
+                SAPIPhonemes += " " & MyPhoneConverter.IdToPhone(MyPhrase.Pronunciation)
+            Next
+        End Sub
+    End Class
+End Namespace
+
+
+   Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs)
+        Dim listener As SpSharedRecoContext
+        Dim grammar As ISpeechRecoGrammar
+        listener = New SpeechLib.SpSharedRecoContext()
+        listener.Recognition += New _ISpeechRecoContextEvents_RecognitionEventHandler(AddressOf listener_Reco)
+        grammar = listener.CreateGrammar(0)
+        grammar.DictationLoad(richTextBox1.Text, SpeechLoadOption.SLOStatic)
+        grammar.DictationSetState(SpeechRuleState.SGDSActive)
+    End Sub
+
+    Public Sub listener_Reco(ByVal StreamNumber As Integer, ByVal StreamPosition As Object, ByVal RecognitionType As SpeechRecognitionType, ByVal Result As ISpeechRecoResult)
+        Dim heard As String = Result.PhraseInfo.GetText(0, -1, True)
+        textbox1.Text += heard
+        textbox2.Text += heard
+    End Sub
+
+
+
+

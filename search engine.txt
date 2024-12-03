@@ -1,0 +1,21 @@
+    Dim alltext() As String = File.ReadAllLines("C:\Users\justin.ross\source\repos\Search Ultima\Search Ultima\ArchiveData.txt")
+                Dim lookfor As String = speech
+                Dim begin As String = "Search for"
+
+                If begin.Contains("Search for") Then
+
+                    For Each line As String In Filter(alltext, lookfor)
+                        If line.EndsWith(lookfor) Then
+                            Dim query As String = lookfor.Replace(begin, "+") 'place 
+                            query.Trim()
+                            query.Replace(" ", "+")
+
+                            query = Uri.EscapeUriString(query)
+                            Process.Start("https://www.google.com/search?q=" + query)
+
+                            Return
+                            ' Drone.UnloadAllGrammars()
+
+                        End If
+                    Next
+                End If

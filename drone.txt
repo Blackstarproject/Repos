@@ -1,0 +1,22 @@
+    ElseIf speech <> "+" Then
+
+                    Dim droneGrammar = New DictationGrammar()
+                    Drone.LoadGrammarAsync(droneGrammar)
+                    Drone.RequestRecognizerUpdate(droneGrammar)
+
+  Dim SearchWithinThis As String() = File.ReadAllLines("C:\Users\justin.ross\source\repos\Search Ultima\Search Ultima\ArchiveData.txt")
+                Dim SearchForThis As String = speech <> "+"
+                Dim FirstCharacter As Integer = SearchWithinThis.AsEnumerable(speech <> "+")
+
+
+                If speech <> "+" Then
+                    speech = "https://www.youtube.com/search?q=" & Uri.EscapeUriString(speech <> "+")
+                    Dim proc As New Process()
+                    Dim startInfo As New ProcessStartInfo(speech)
+                    proc.StartInfo = startInfo
+                    proc.Start()
+
+                    Return
+                    Drone.UnloadAllGrammars()
+
+                End If

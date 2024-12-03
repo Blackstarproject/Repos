@@ -1,0 +1,44 @@
+'Add project .Net reference to System.Management
+Imports System.Management
+
+Public Class Form1
+
+   Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+      KillUserProcesses(Now.AddMinutes(-5)) 'get all processes started in last 5 minutes
+   End Sub
+
+   Sub KillUserProcesses(ByVal StartedAfter As Date)
+      Dim searcher As New ManagementObjectSearcher
+
+
+      searcher.Query.QueryString = "Select * from Win32_Process Where CreationDate >= '" & _
+                                   ManagementDateTimeConverter.ToDmtfDateTime(StartedAfter) & "'"
+
+      Dim UserName As String = Environment.UserName
+      Dim ProcessID As Int32
+
+      Dim args() As String = New String() {String.Empty, String.Empty} ' {UserName, Domain}
+      For Each mo As ManagementObject In searcher.Get
+         mo.InvokeMethod("GetOwner", args)
+         If Not String.IsNullOrEmpty(args(0)) AndAlso args(0) = UserName Then
+
+            ProcessID = CInt(mo.Properties("ProcessID").Value)
+
+            'If you wish to terminate the processes found, you can use this commented out code
+            'Dim p As Process = Process.GetProcessById(ProcessID)
+            'If p IsNot Nothing Then
+            '   p.Kill()
+            '   p.Dispose()
+            'End If
+
+
+      'The following is just for displaying the found processes to a textbox
+
+            TextBox1.Text &= mo.Properties("Caption").Value.ToString & " : " & _
+                             ManagementDateTimeConverter.ToDateTime(mo.Properties("CreationDate").Value.ToString).ToString("MM/dd/yyy HH:mm:ss") & _
+                             ", PID=" & ProcessID.ToString & vbCrLf
+         End If
+      Next 
+   End Sub
+
+End Class

@@ -1,0 +1,39 @@
+Dim FILE_NAME As String = "C:\Users\Owner\Documents\test.txt"
+Dim i As Integer
+Dim aryText(4) As String
+
+aryText(0) = "Mary WriteLine"
+aryText(1) = "Had"
+aryText(2) = "A"
+aryText(3) = "Little"
+aryText(4) = "One"
+
+Dim objWriter As New System.IO.StreamWriter( FILE_NAME )
+
+For i = 0 To 4
+
+objWriter.WriteLine( aryText(i) )
+
+Next
+
+objWriter.Close()
+
+
+to trim end:
+
+text = text.TrimEnd({Convert.ToChar(10), Convert.ToChar(13)})
+yourString.TrimEnd() 
+
+Or:
+
+Dim lines() As String = IO.File.ReadAllLines("d:\abc\abc.txt")
+txtFirstLine.Text = lines(0)
+txtLastLine.Text = lines(lines.Length - 1)
+The code reads the text file and creates an array of Strings with one line in each element 
+of the array.  Then it copies the first line into one TextBox and the last line into the other.  
+Note that there is no way to find the last line of a text file without reading the whole file in 
+some way.
+
+
+or :
+speech = vbnewline

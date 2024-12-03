@@ -1,0 +1,40 @@
+Imports SpeechLib
+Imports System
+Imports System.Speech.Recognition
+Imports System.Windows.Forms
+
+Namespace Dictation_Evo_One
+    Public Partial Class Form1
+        Inherits Form
+
+        Private sRecognize As SpeechRecognitionEngine = New SpeechRecognitionEngine()
+
+        Public Sub New()
+            InitializeComponent()
+        End Sub
+
+        Private Sub SRecognize_SpeechRecognized(ByVal sender As Object, ByVal e As SpeechRecognizedEventArgs)
+            Select Case e.Result.Text
+                Case "hello"
+            End Select
+
+            richTextBox2.Text = e.Result.Text.ToString()
+        End Sub
+
+        Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs)
+            Dim sList As Choices = New Choices()
+            sList.Add(New String() {"start chrome", "hello", "test", "it works", "how", "are", "you", "today", "i", "am", "fine", "exit", "so"})
+            Dim gr As Grammar = New Grammar(New GrammarBuilder(sList))
+
+            Try
+                sRecognize.RequestRecognizerUpdate()
+                sRecognize.LoadGrammar(gr)
+                sRecognize.SpeechRecognized += AddressOf SRecognize_SpeechRecognized
+                sRecognize.SetInputToDefaultAudioDevice()
+                sRecognize.RecognizeAsync(RecognizeMode.Multiple)
+            Catch __unusedException1__ As Exception
+                Return
+            End Try
+        End Sub
+    End Class
+End Namespace

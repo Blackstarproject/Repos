@@ -1,0 +1,22 @@
+
+         
+            Case speech
+
+                Dim SearchWithinThis As String() = File.ReadAllLines("C:\Users\justin.ross\source\repos\WindowsApp1\WindowsApp1\Commands.txt")
+                Dim SearchForThis As String = speech <> "+"
+                Dim FirstCharacter As Integer = SearchWithinThis.AsEnumerable(speech <> "+")
+                Dim googleGrammar = New DictationGrammar()
+                Drone.LoadGrammarAsync(googleGrammar)
+                Drone.RequestRecognizerUpdate(googleGrammar)
+                If speech <> "+" Then
+
+                    speech = "https://www.youtube.com/search?q=" & Uri.EscapeUriString(speech)
+                    Dim proc As New Process()
+                    Dim startInfo As New ProcessStartInfo(speech)
+                    proc.StartInfo = startInfo
+                    proc.Start()
+
+                    Return
+                    Drone.UnloadAllGrammars()
+                End If
+

@@ -1,0 +1,56 @@
+Imports System.Reflection
+
+Namespace RegistryWatcher
+    Public Class Listener
+        Const ERROR_KEY_DELETED As Integer = 1018
+
+        <Flags>
+        Public Enum NotifyFilterFlags
+            REG_NOTIFY_CHANGE_NAME = 1
+            REG_NOTIFY_CHANGE_ATTRIBUTES = 2
+            REG_NOTIFY_CHANGE_LAST_SET = 4
+            REG_NOTIFY_CHANGE_SECURITY = 8
+        End Enum
+
+        <DllImport("advapi32.dll", EntryPoint:="RegNotifyChangeKeyValue")>
+        Private Shared Function RegNotifyChangeKeyValue(ByVal key As IntPtr, ByVal watchSubTree As Boolean, ByVal notifyFilter As Integer, ByVal regEvent As IntPtr, ByVal async As Boolean) As Long
+        Private keyHandle As IntPtr
+        Private KeyToMonitor As RegistryKey
+        Public Delegate Sub RegistryChange(ByVal regValue As String)
+        Public Delegate Sub RegistryError(ByVal ex As Exception)
+        Public Event RegChange As RegistryChange
+        Public Event RegErr As RegistryError
+
+        Public Sub New(ByVal key As RegistryKey, ByVal subKey As String)
+            KeyToMonitor = key.OpenSubKey(subKey, False)
+        End Sub
+
+        Public Sub start()
+            Dim regKeyType As Type = KeyToMonitor.[GetType]()
+            Dim field As FieldInfo = regKeyType.GetField("hkey", BindingFlags.Instance Or BindingFlags.NonPublic)
+            keyHandle = CType(field.GetValue(KeyToMonitor), IntPtr)
+            Dim NotifyEvent As WaitHandle = New AutoResetEvent(False)
+            Dim RetVal As Long = RegNotifyChangeKeyValue(keyHandle, True, CInt(NotifyFilterFlags.REG_NOTIFY_CHANGE_LAST_SET), NotifyEvent.Handle, True)
+            System.Threading.ThreadPool.RegisterWaitForSingleObject(NotifyEvent, New WaitOrTimerCallback(AddressOf ValueChange), KeyToMonitor, -1, False)
+        End Sub
+
+        Public Sub [stop]()
+            If Not (KeyToMonitor Is Nothing) Then KeyToMonitor.Close()
+        End Sub
+
+        Public Sub ValueChange(ByVal state As Object, ByVal timedOut As Boolean)
+            Try
+                Dim count As Integer = CInt(KeyToMonitor.GetValue("Count"))
+
+                If count > 0 Then
+                    RegChange(state.ToString())
+                Else
+                    start()
+                End If
+
+            Catch ex As Exception
+                RegErr(ex)
+            End Try
+        End Sub
+    End Class
+End Namespace

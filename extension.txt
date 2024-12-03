@@ -1,0 +1,11 @@
+Dim exts() as string = {"*.txt", "*.vbs"}
+Dim folder as string = "put the directory path where you want to delete files here"
+Try
+    For Each ext as string In file exts
+        For Each f as string In system.io.directory.getfiles(folder, ext)
+             system.io.file.delete(f)
+        next
+    next
+Catch ex as exception
+    messagebox.show(ex.message)
+end try

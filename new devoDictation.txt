@@ -1,0 +1,20 @@
+ Select Case (speech)
+            Case speech
+                'This will run on dictation as well as cross referencing the massive archive of commands. Simply add a command to the list to
+                'the list if dictation doesn't pick up what you are saying correctly.
+
+                Dim devoGrammar = New DictationGrammar()
+                Drone.LoadGrammarAsync(devoGrammar)
+                Drone.RequestRecognizerUpdate(devoGrammar)
+                If speech <> "+" Then
+
+                    speech = "https://www.youtube.com/search?q=" & Uri.EscapeUriString(speech)
+                    Dim proc As New Process()
+                    Dim startInfo As New ProcessStartInfo(speech)
+                    proc.StartInfo = startInfo
+                    proc.Start()
+
+                    Return
+                    Drone.UnloadAllGrammars()
+                End If
+        End Select

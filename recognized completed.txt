@@ -1,0 +1,24 @@
+   Private Shared Sub Main(ByVal args() As String)
+        Dim gb As Choices = New Choices
+        gb.Add("encrypt the document")
+        gb.Add("decrypt the document")
+        Dim commands As Grammar = New Grammar(gb)
+        commands.Name = "commands"
+        Dim dg As DictationGrammar = New DictationGrammar("grammar:dictation#pronunciation")
+        dg.Name = "Random"
+        Dim recoEngine As SpeechRecognitionEngine = New SpeechRecognitionEngine(New CultureInfo("en-US"))
+        recoEngine.SetInputToDefaultAudioDevice
+        recoEngine.LoadGrammar(commands)
+        recoEngine.LoadGrammar(dg)
+        recoEngine.RecognizeCompleted = (recoEngine.RecognizeCompleted + recoEngine_RecognizeCompleted)
+        recoEngine.RecognizeAsync
+        System.Console.ReadKey(true)
+        recoEngine.RecognizeAsyncStop
+    End Sub
+    
+    Private Shared Sub recoEngine_RecognizeCompleted(ByVal sender As Object, ByVal e As RecognizeCompletedEventArgs)
+        If (e.Result.Grammar.Name <> "Random") Then
+            System.Console.WriteLine(e.Result.Text)
+        End If
+        
+    End Sub

@@ -1,0 +1,182 @@
+
+Modifier keys	
+kVirtualCapsLockKey	&h039
+kVirtualShiftKey	&h038
+kVirtualControlKey	&h03B
+kVirtualOptionKey	&h03A
+kVirtualCommandKey	&h037
+Editing/utility keys	
+kVirtualHelpKey	&h072
+kVirtualDeleteKey	&h033
+kVirtualTabKey	&h030
+kVirtualEnterKey	&h04C
+kVirtualReturnKey	&h024
+kVirtualEscapeKey	&h035
+kVirtualForwardDeleteKey	&h075
+Navigation keys	
+kVirtualHomeKey	&h073
+kVirtualEndKey	&h002
+kVirtualPageUpKey	&h074
+kVirtualPageDownKey	&h079
+kVirtualLeftArrowKey	&h07B
+kVirtualRightArrowKey	&h07C
+kVirtualUpArrowKey	&h07E
+kVirtualDownArrowKey	&h07D
+
+Key codes for Windows:
+
+VK_LBUTTON	&h01
+VK_RBUTTON	&h02
+VK_CANCEL	&h03
+VK_MBUTTON	&h04
+VK_XBUTTON1	&h05 (Windows 2000 and newer)
+VK_XBUTTON2	&h06 (Windows 2000 and newer)
+VK_BACK	&h08
+VK_TAB	&h09
+VK_CLEAR	&h0C
+VK_RETURN	&h0D
+VK_SHIFT	&h10
+VK_CONTROL	&h11
+VK_MENU	&h12
+VK_PAUSE	&h13
+VK_CAPITAL	&h14
+VK_KANA	&h15
+VK_HANGUL	&h15
+VK_JUNJA	&h17
+VK_FINAL	&h18
+VK_HANJA	&h19
+VK_KANJI	&h19
+VK_ESCAPE	&h1B
+VK_CONVERT	&h1C
+VK_NONCONVERT	&h1D
+VK_ACCEPT	&h1E
+VK_MODECHANGE	&h1F
+VK_SPACE	&h20
+VK_PRIOR	&h21
+VK_NEXT	&h22
+VK_END	&h23
+VK_HOME	&h24
+VK_LEFT	&h25
+VK_UP	&h26
+VK_RIGHT	&h27
+VK_DOWN	&h28
+VK_SELECT	&h29
+VK_PRINT	&h2A
+VK_EXECUTE	&h2B
+VK_SNAPSHOT	&h2C
+VK_INSERT	&h2D
+VK_DELETE	&h2E
+VK_HELP	&h2F
+VK_0 - VK_9	are the same as ASCII "0" - "9" (&h30 - &h39)
+VK_A - VK_Z	are the same as ASCII "A" - "Z" (&h41 - &h5A)
+VK_LWIN	&h5B
+VK_RWIN	&h5C
+VK_APPS	&h5D
+VK_SLEEP	&h5F
+VK_NUMPAD0	&h60
+VK_NUMPAD1	&h61
+VK_NUMPAD2	&h62
+VK_NUMPAD3	&h63
+VK_NUMPAD4	&h64
+VK_NUMPAD5	&h65
+VK_NUMPAD6	&h66
+VK_NUMPAD7	&h67
+VK_NUMPAD8	&h68
+VK_NUMPAD9	&h69
+VK_MULTIPLY	&h6A
+VK_ADD	&h6B
+VK_SEPARATOR	&h6C
+VK_SUBTRACT	&h6D
+VK_DECIMAL	&h6E
+VK_DIVIDE	&h6F
+VK_F1	&h70
+VK_F2	&h71
+VK_F3	&h72
+VK_F4	&h73
+VK_F5	&h74
+VK_F6	&h75
+VK_F7	&h76
+VK_F8	&h77
+VK_F9	&h78
+VK_F10	&h79
+VK_F11	&h7A
+VK_F12	&h7B
+VK_F13	&h7C
+VK_F14	&h7D
+VK_F15	&h7E
+VK_F16	&h7F
+VK_F17	&h80
+VK_F18	&h81
+VK_F19	&h82
+VK_F20	&h83
+VK_F21	&h84
+VK_F22	&h85
+VK_F23	&h86
+VK_F24	&h87
+VK_NUMLOCK	&h90
+VK_SCROLL	&h91
+VK_OEM_NEC_EQUAL	&h92 // "=" key on numpad (NEC PC-9800)
+VK_OEM_FJ_JISHO	&h92 // "Dictionary" key (Fujitsu)
+VK_OEM_FJ_MASSHOU	&h93 // "Unregister word" key (Fujitsu)
+VK_OEM_FJ_TOUROKU	&h94 // "Register word" key (Fujitsu)
+VK_OEM_FJ_LOYA	&h95 // "Left OYAYUBI" key (Fujitsu)
+VK_OEM_FJ_ROYA	&h96 // "Right OYAYUBI" key (Fujitsu)
+VK_BROWSER_BACK	&hA6 (Windows 2000 or newer)
+VK_BROWSER_FORWARD	&hA7 (Windows 2000 or newer)
+VK_BROWSER_REFRESH	&hA8 (Windows 2000 or newer)
+VK_BROWSER_STOP	&hA9 (Windows 2000 or newer)
+VK_BROWSER_SEARCH	&hAA (Windows 2000 or newer)
+VK_BROWSER_FAVORITES	&hAB (Windows 2000 or newer)
+VK_BROWSER_HOME	&hAC (Windows 2000 or newer)
+VK_VOLUME_MUTE	&hAD (Windows 2000 or newer)
+VK_VOLUME_DOWN	&hAE (Windows 2000 or newer)
+VK_VOLUME_UP	&hAF (Windows 2000 or newer)
+VK_MEDIA_NEXT_TRACK	&hB0 (Windows 2000 or newer)
+VK_MEDIA_PREV_TRACK	&hB1 (Windows 2000 or newer)
+VK_MEDIA_STOP	&hB2 (Windows 2000 or newer)
+VK_MEDIA_PLAY_PAUSE	&hB3 (Windows 2000 or newer)
+VK_LAUNCH_MAIL	&hB4 (Windows 2000 or newer)
+VK_LAUNCH_MEDIA_SELECT	&hB5 (Windows 2000 or newer)
+VK_LAUNCH_APP1	&hB6 (Windows 2000 or newer)
+VK_LAUNCH_APP2	&hB7 (Windows 2000 or newer)
+VK_OEM_1	&hBA // ";:" for US
+VK_OEM_PLUS	&hBB // "+" any country
+VK_OEM_COMMA	&hBC // "," any country
+VK_OEM_MINUS	&hBD // "-" any country
+VK_OEM_PERIOD	&hBE // "." any country
+VK_OEM_2	&hBF // "/?" for US
+VK_OEM_3	&hC0 // "'~" for US
+VK_OEM_4	&hDB // "[{" for US
+VK_OEM_5	&hDC // "\|" for US
+VK_OEM_6	&hDD // "]}" for US
+VK_OEM_7	&hDE // """" for US
+VK_OEM_8	&hDF
+VK_OEM_AX	&hE1 // "AX" key on Japanese AX kbd
+VK_OEM_102	&hE2 // "<>" or "\|" on RT 102-key kbd.
+VK_ICO_HELP	&hE3 // Help key on ICO
+VK_ICO_00	&hE4 // 00 key on ICO
+VK_PROCESSKEY	&hE5
+VK_ICO_CLEAR	&hE6
+VK_PACKET	&hE7 (Windows 2000 or newer)
+VK_OEM_RESET	&hE9 (Nokia/Ericsson)
+VK_OEM_JUMP	&hEA (Nokia/Ericsson)
+VK_OEM_PA1	&hEB (Nokia/Ericsson)
+VK_OEM_PA2	&hEC (Nokia/Ericsson)
+VK_OEM_PA3	&hED (Nokia/Ericsson)
+VK_OEM_WSCTRL	&hEE (Nokia/Ericsson)
+VK_OEM_CUSEL	&hEF (Nokia/Ericsson)
+VK_OEM_ATTN	&hF0 (Nokia/Ericsson)
+VK_OEM_FINISH	&hF1 (Nokia/Ericsson)
+VK_OEM_COPY	&hF2 (Nokia/Ericsson)
+VK_OEM_AUTO	&hF3 (Nokia/Ericsson)
+VK_OEM_ENLW	&hF4 (Nokia/Ericsson)
+VK_OEM_BACKTAB	&hF5 (Nokia/Ericsson)
+VK_ATTN	&hF6
+VK_CRSEL	&hF7
+VK_EXSEL	&hF8
+VK_EREOF	&hF9
+VK_PLAY	&hFA
+VK_ZOOM	&hFB
+VK_NONAME	&hFC
+VK_PA1	&hFD
+VK_OEM_CLEAR	&hFE

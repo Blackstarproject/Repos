@@ -1,0 +1,28 @@
+ Dim file As String = "D:\temp\swap.txt"
+    Dim text As String = "Aaaaa"
+    Dim lines() As String = Filter(System.IO.File.ReadAllLines(file), text)
+
+
+Dim alltext() As String = System.IO.File.ReadAllLines(myfilename)
+Dim filtered() As String = Filter(text, "12345")
+
+Dim alltext() As String = System.IO.File.ReadAllLines("d:\temp\test.txt")
+Dim lookfor As String = "095" & ","
+
+For Each line As String In Filter(alltext, lookfor)
+    If line.StartsWith("095,") Then
+        MsgBox("found " & line)
+    End If
+Next
+
+Dim InputStr As String = TextBox1.Text
+
+        For Each FileStr As String In IO.Directory.GetFiles("C:\your folder", "*.txt")
+
+            If IO.File.ReadAllText(FileStr).IndexOf(InputStr) >= 0 Then
+
+                ListBox1.Items.Add(IO.Path.GetFileName(FileStr))
+
+            End If
+
+        Next

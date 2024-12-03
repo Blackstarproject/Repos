@@ -1,0 +1,8 @@
+To disable blocking completely, you can run those via CMD as admin: 
+Unblock file Path
+
+rem 1808 - Disable the warning The Publisher could not be verified
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "DefaultFileTypeRisk" /t REG_DWORD /d 1808 /f
+
+rem Disable Security warning to unblock the downloaded file
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "SaveZoneInformation" /t REG_DWORD /d 1 /f

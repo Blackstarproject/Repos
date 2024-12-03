@@ -1,0 +1,42 @@
+Restrict A and B drives only
+Registry Hive	HKEY_CURRENT_USER
+Registry Path	Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+Value Name	NoViewOnDrive
+Value Type	REG_DWORD
+Value	3
+Restrict C drive only
+Registry Hive	HKEY_CURRENT_USER
+Registry Path	Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+Value Name	NoViewOnDrive
+Value Type	REG_DWORD
+Value	4
+Restrict D drive only
+Registry Hive	HKEY_CURRENT_USER
+Registry Path	Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+Value Name	NoViewOnDrive
+Value Type	REG_DWORD
+Value	8
+Restrict A, B and C drives only
+Registry Hive	HKEY_CURRENT_USER
+Registry Path	Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+Value Name	NoViewOnDrive
+Value Type	REG_DWORD
+Value	7
+Restrict A, B, C and D drives only
+Registry Hive	HKEY_CURRENT_USER
+Registry Path	Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+Value Name	NoViewOnDrive
+Value Type	REG_DWORD
+Value	15
+Restrict all drives
+Registry Hive	HKEY_CURRENT_USER
+Registry Path	Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+Value Name	NoViewOnDrive
+Value Type	REG_DWORD
+Value	67108863
+Do not restrict drives
+Registry Hive	HKEY_CURRENT_USER
+Registry Path	Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+Value Name	NoViewOnDrive
+Value Type	REG_DWORD
+Value	0

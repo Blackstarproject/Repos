@@ -1,0 +1,23 @@
+Scan for registry changes:
+
+Const HKEY_CLASSES_ROOT = &H80000000
+Const HKEY_CURRENT_USER = &H80000001
+Const HKEY_LOCAL_MACHINE = &H80000002
+Const REG_NOTIFY_CHANGE_NAME = &H1            ' Create or delete (child)
+Const REG_NOTIFY_CHANGE_ATTRIBUTES = &H2
+Const REG_NOTIFY_CHANGE_LAST_SET = &H4            ' time stamp
+Const REG_NOTIFY_CHANGE_SECURITY = &H8
+Const REG_NOTIFY_ALL = (REG_NOTIFY_CHANGE_NAME Or REG_NOTIFY_CHANGE_ATTRIBUTES Or REG_NOTIFY_CHANGE_LAST_SET Or REG_NOTIFY_CHANGE_SECURITY)
+Private Declare Function RegNotifyChangeKeyValue Lib "advapi32" (ByVal hKey As Long, ByVal bWatchSubtree As Boolean, ByVal dwNotifyFilter As Long, ByVal hEvent As Long, ByVal fAsynchronous As Boolean) As Long
+Private Sub Form_Load()
+    'KPD-Team 1999
+    'URL: [url]http://www.allapi.net/[/url]
+    'E-Mail: [email]KPDTeam@Allapi.net[/email]
+ 
+    'Create a temporary registry key
+    SaveSetting "Registry Notification", "Hello", "Testing", "123"
+    'Call the function .. This will notify us when something changes at HKEY_CURRENT_USER
+    RegNotifyChangeKeyValue HKEY_CURRENT_USER, True, REG_NOTIFY_ALL, ByVal 0&, False
+    MsgBox "Registry changed"
+    Unload Me
+End Sub

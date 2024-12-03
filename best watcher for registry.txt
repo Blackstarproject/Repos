@@ -1,0 +1,48 @@
+Imports System
+Imports System.Management
+
+Namespace WmiExample
+    Public Class WmiChangeEventTester
+        Public Sub New()
+            Try
+                Dim query As WqlEventQuery = New WqlEventQuery("SELECT * FROM RegistryValueChangeEvent WHERE " & "Hive = 'HKEY_LOCAL_MACHINE'" & "AND KeyPath = 'SOFTWARE\\Microsoft\\.NETFramework' AND ValueName='InstallRoot'")
+                Dim watcher As ManagementEventWatcher = New ManagementEventWatcher(query)
+                Console.WriteLine("Waiting for an event...")
+                watcher.EventArrived += New EventArrivedEventHandler(AddressOf HandleEvent)
+                watcher.Start()
+                System.Threading.Thread.Sleep(100000000)
+                watcher.[Stop]()
+            Catch managementException As ManagementException
+                Console.WriteLine("An error occurred: " & managementException.Message)
+            End Try
+        End Sub
+
+        Private Sub HandleEvent(ByVal sender As Object, ByVal e As EventArrivedEventArgs)
+            Console.WriteLine("Received an event.")
+        End Sub
+
+        Public Shared Sub Main()
+            Dim receiveEvent As WmiChangeEventTester = New WmiChangeEventTester()
+        End Sub
+    End Class
+End Namespace
+
+
+
+
+Public Class MonitorSample
+    Private Shared Sub Main()
+        Dim monitor As RegistryMonitor = New RegistryMonitor(RegistryHive.CurrentUser, "Environment")
+        monitor.RegChanged += New EventHandler(AddressOf OnRegChanged)
+        monitor.Start()
+
+        While True
+        End While
+
+        monitor.[Stop]()
+    End Sub
+
+    Private Sub OnRegChanged(ByVal sender As Object, ByVal e As EventArgs)
+        Console.WriteLine("registry key has changed")
+    End Sub
+End Class

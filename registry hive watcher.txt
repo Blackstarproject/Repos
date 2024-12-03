@@ -1,0 +1,37 @@
+In this example, an event will be raised if a change is made to the registery HKEY_LOCAL_MACHINE\SOFTWARE\Classes\.jpg\OpenWithProgids
+
+The event will invoke a method passing as argument the changed key ( The event fires on the WMI thread, so you have to invoke to work with your application thread )
+
+Imports System.Management
+Public Class Form1
+
+ Private WithEvents EventWatcher As New ManagementEventWatcher
+
+ Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+ Dim WQLquery As New WqlEventQuery("SELECT * FROM RegistryKeyChangeEvent " & _
+  "WHERE Hive = 'HKEY_LOCAL_MACHINE'" & _
+  "AND KeyPath='SOFTWARE\\Classes\\.jpg\\OpenWithProgids'")
+ EventWatcher.Query = WQLquery
+ End Sub
+
+ Private Sub EventWatcher_EventArrived(ByVal sender As Object, ByVal e As EventArrivedEventArgs) Handles EventWatcher.EventArrived
+ Dim WMI_Event = e.NewEvent
+ Me.BeginInvoke(New FillTextboxDelegate(AddressOf FillTextbox), WMI_Event.GetPropertyValue("KeyPath").ToString)
+ End Sub
+
+ Delegate Sub FillTextboxDelegate(ByVal Txt As String)
+ Private Sub FillTextbox(ByVal Txt As String)
+
+ 'Here, Txt contains the registery key that was changed
+ 'Do your notify icon code here
+
+ End Sub
+
+ Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+ EventWatcher.Start()
+ End Sub
+
+ Private Sub Form1_FormClosing(ByVal sender As Object, ByVal e As FormClosingEventArgs) Handles Me.FormClosing
+ EventWatcher.Stop()
+ End Sub
+End Class

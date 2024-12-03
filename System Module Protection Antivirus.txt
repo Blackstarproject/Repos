@@ -1,0 +1,99 @@
+Here Now you can get the username from the running process, and if the process is a SYSTEM owned process, you can ignore stopping it...
+
+hope this helps, some of this code was ported from a C# example found here:
+
+who created a process?
+
+ 
+
+Imports System.Runtime.InteropServices
+Imports System.Security.Principal
+Imports System.Security
+Imports Handle = System.IntPtr
+Public Class Form1
+    'A Great deal of this code was 
+    'Manipulated from code found here:
+    'http://groups.google.com/group/microsoft.public.dotnet.framework/msg/c329111e58dd7ce7?dmode=source&hl=en
+    Private Sub Form1_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        'Add some system accounts to the list of system accounts
+        SystemAccounts.Add("system")
+        SystemAccounts.Add("local service")
+        SystemAccounts.Add("network service")
+        'Get the current running processes
+        Dim Processes() As Process = Process.GetProcesses()
+        'Examine each running process
+        For Each Process As Process In Processes
+            'handle any unseen errors
+            Try
+                'get the account name that owns the current process
+                Dim Account As String = TrimAccount(GetAccountName(Process.Handle))
+                'check if the account is a system account
+                If IsSystemAccount(Account) = False Then
+                    MsgBox(Account)
+                    'In here is where Non-System account Processes
+                    'Can be examined
+                Else
+                    'In here is where system account processes
+                    'Can be examined
+                End If
+                'catch any errors
+            Catch ex As Exception
+                'handle errors
+            End Try
+            'examine next process
+        Next
+    End Sub
+End Class
+Module WorkAround
+    'Owner
+    Public Const Token As Integer = &H8
+    'List of system accounts
+    Public SystemAccounts As New List(Of String)
+    <DllImport("advapi32", SetLastError:=True), SuppressUnmanagedCodeSecurityAttribute()> _
+    Public Function OpenProcessToken(ProcessHandle As Handle, DesiredAccess As Integer, ByRef TokenHandle As IntPtr) As Integer
+    End Function
+    <DllImport("kernel32", SetLastError:=True), SuppressUnmanagedCodeSecurityAttribute()> _
+    Public Function CloseHandle(handle As HANDLE) As Boolean
+    End Function
+    Public Function IsSystemAccount(Account As String) As Boolean
+        'match case of system accounts
+        Account = LCase(Account)
+        'Check if the account is in the list
+        If SystemAccounts.IndexOf(Account) > -1 Then
+            'If it is, then return true
+            Return True
+        End If
+        'If not, return false
+        Return False
+    End Function
+    Public Function GetAccountName(processHandle As Handle) As String
+        'Setup Access to be Token(&H8) Owner access...
+        Dim Access As Integer = Token
+        'Create a token handle
+        Dim TokenHandle As Handle = IntPtr.Zero
+        'Open the process token
+        If 0 <> OpenProcessToken(processHandle, Access, TokenHandle) Then
+            'Get the Identity
+            Dim User As New WindowsIdentity(TokenHandle)
+            'Return the Computer/User Name
+            Return (User.Name.ToString)
+            'Close the process token
+            CloseHandle(TokenHandle)
+        Else
+            'error
+            Return "Error"
+        End If
+    End Function
+    Public Function TrimAccount(AccountName As String) As String
+        'setup an answer
+        Dim Answer As String = String.Empty
+        'find the backslash in the account name
+        Dim StartUsername As Integer = InStr(AccountName, "\") + 1
+        'get the username from the Computer/Username
+        Answer = Mid$(AccountName, StartUsername)
+        'return the answer
+        Return Answer
+    End Function
+End Module
+
+

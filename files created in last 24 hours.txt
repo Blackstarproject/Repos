@@ -1,0 +1,113 @@
+' BGW MODIFIED FILES LAST XXX HRS
+Option Strict On
+Option Explicit On
+
+Imports System.ComponentModel
+Imports System.IO
+
+Public Class Form1
+  Dim Ignore As New List(Of String)
+  Dim Failed As New List(Of String)
+  Dim FileCount As Integer = 0
+  Dim sw As New Stopwatch
+  Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Location = New Point(100, 100)
+    Size = New Size(700, 400)
+    MinimumSize = New Size(600, 200)
+
+    ListBox2.SendToBack()
+    ListBox2.Location = ListBox1.Location
+    ListBox2.Size = ListBox1.Size
+
+    ' create an Ignore extention list
+    Ignore.AddRange({".wer", ".cache"})
+
+  End Sub
+  Private Sub BackgroundWorker1_DoWork(sender As Object, e As DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+    GetFilesCreated(TextBox1.Text)
+  End Sub
+  Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
+
+    Label6.Text = FileCount.ToString
+    Label7.Text = Failed.Count.ToString
+    Dim ms As TimeSpan = sw.Elapsed
+    Label8.Text = ms.ToString("h\h\ m\m\ s\s\ fff\m\s")
+    sw.Reset()
+    Label12.Text = ListBox1.Items.Count.ToString
+    Label10.Text = "Ready ......."
+    Button2.Text = "GO"
+  End Sub
+  Sub GetFilesCreated(initialfolder As String)
+
+    If Not Directory.Exists(initialfolder) Then Exit Sub
+
+    Dim lastHours As Integer
+    Integer.TryParse(TextBox2.Text, lastHours)
+    If lastHours < 1 Then Exit Sub
+
+    Dim di As DirectoryInfo = New DirectoryInfo(initialfolder)
+
+    Try
+      For Each fi As FileInfo In di.GetFiles()
+        If BackgroundWorker1.CancellationPending Then Exit Sub
+        FileCount += 1
+        If Not Ignore.Contains(fi.Extension) AndAlso fi.LastWriteTime >= Now.AddHours(-lastHours) Then
+          Invoke(Sub() ListBox1.Items.Add(fi.FullName))
+        End If
+      Next
+      Dim di2 As List(Of DirectoryInfo) = di.GetDirectories().ToList
+      If di2.Count > 0 Then
+        For Each s As DirectoryInfo In di2
+          initialfolder = s.FullName
+          GetFilesCreated(initialfolder)
+        Next
+      End If
+    Catch ex1 As UnauthorizedAccessException
+      Failed.Add(di.FullName)
+      Invoke(Sub() ListBox2.Items.Add(di.FullName))
+    End Try
+  End Sub
+  Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Dim fb As New FolderBrowserDialog
+    fb.Description = "Select Folder to work on"
+    If Directory.Exists(TextBox1.Text) Then
+      fb.SelectedPath = TextBox1.Text
+    Else
+      fb.SelectedPath = My.Computer.FileSystem.SpecialDirectories.MyDocuments
+    End If
+    If fb.ShowDialog = DialogResult.OK Then
+      TextBox1.Text = fb.SelectedPath
+    End If
+  End Sub
+  Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+    Select Case Button2.Text
+      Case "GO"
+        FileCount = 0
+        Failed.Clear()
+
+        Label6.Text = "0"
+        Label7.Text = "0"
+        Label8.Text = "0"
+        ListBox1.Items.Clear()
+        Label12.Text = "0"
+        Label10.Text = "Working ....."
+        Button2.Text = "STOP"
+        sw.Start()
+        BackgroundWorker1.RunWorkerAsync()
+      Case Else
+        BackgroundWorker1.CancelAsync()
+    End Select
+  End Sub
+  Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+    Select Case Button3.Text
+      Case "SHOW FAILED"
+        ListBox2.BringToFront()
+        Button3.Text = "SHOW RESULTS"
+        Label9.Text = "Failed List"
+      Case Else
+        ListBox2.SendToBack()
+        Button3.Text = "SHOW FAILED"
+        Label9.Text = "Results List"
+    End Select
+  End Sub
+End Class

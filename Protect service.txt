@@ -1,0 +1,35 @@
+let me clarify that this can be very dangerous, as you are one step away from an infinite loop constantly crashing your computer.
+
+
+Imports System
+Imports System.Collections.Generic
+Imports System.Linq
+Imports System.Text
+Imports System.Threading.Tasks
+Imports System.Runtime.InteropServices
+Imports System.IO
+
+Namespace bsod
+    Class Program
+        Private Shared STATUS_ASSERTION_FAILURE As UInteger = &HC0000420
+
+        Private Shared Sub Main(ByVal args As String())
+            While Console.ReadKey(True).Key = ConsoleKey.W
+                crash()
+            End While
+        End Sub
+
+        Private Shared Sub crash()
+            Dim previousValue As Boolean = False
+            RtlAdjustPrivilege(19, True, False, previousValue)
+            Dim oul As UInteger = 0
+            Dim sptr As IntPtr = Marshal.StringToHGlobalAnsi("")
+            NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, IntPtr.Zero, 6, oul)
+        End Sub
+
+        <DllImport("ntdll.dll")>
+        Private Shared Function RtlAdjustPrivilege(ByVal Privilege As Integer, ByVal bEnablePrivilege As Boolean, ByVal IsThreadPrivilege As Boolean, <Out> ByRef PreviousValue As Boolean) As UInteger
+        <DllImport("ntdll.dll")>
+        Private Shared Function NtRaiseHardError(ByVal ErrorStatus As UInteger, ByVal NumberOfParameters As UInteger, ByVal UnicodeStringParameterMask As UInteger, ByVal Parameters As IntPtr, ByVal ValidResponseOption As UInteger, <Out> ByRef Response As UInteger) As UInteger
+    End Class
+End Namespace

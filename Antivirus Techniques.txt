@@ -1,0 +1,8 @@
+Antivirus tips:
+
+A way to do this is to encrypt the binary file using an encryption engine and moving it into a quarantine folder, 
+you could create a random password and encrypt the file with that password and store it somewhere 
+(that password could also be encrypted with a master key). That is probably the easiest way of quarantining. 
+To unquaranine, just write the complete opposite of the quarantining code. 
+Enumerate the files into a list and filter it out, then when the user clicks on an item and presses unquarantine, 
+it calls the unquarantine function with the filepath as the variable.

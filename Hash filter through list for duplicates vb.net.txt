@@ -1,0 +1,17 @@
+
+        'In the event of duplicated word is in the command list >> (ArchiveData.txt), this removes double words
+        'Dim path As String = "C:\Users\justin.ross\source\repos\Search Ultima\Search Ultima\ArchiveData.txt"
+        'Dim lines As New HashSet(Of String)()
+        'Read to file
+        'Using sr As New StreamReader(path)
+        'Do While sr.Peek() >= 0
+        'lines.Add(sr.ReadLine())
+        'Loop
+        'End Using
+
+        'Write to file
+        'Using sw As New StreamWriter(path)
+        'For Each line As String In lines
+        'sw.WriteLine(line)
+        'Next
+        'End Using

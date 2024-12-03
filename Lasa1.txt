@@ -1,0 +1,109 @@
+Public Class LsaUtility
+    <DllImport("advapi32.dll", PreserveSig:=True)>
+    Private Shared Function LsaOpenPolicy(ByRef SystemName As LSA_UNICODE_STRING, ByRef ObjectAttributes As LSA_OBJECT_ATTRIBUTES, ByVal DesiredAccess As Int32, <Out> ByRef PolicyHandle As IntPtr) As UInt32
+    <DllImport("advapi32.dll", SetLastError:=True, PreserveSig:=True)>
+    Private Shared Function LsaAddAccountRights(ByVal PolicyHandle As IntPtr, ByVal AccountSid As IntPtr, ByVal UserRights As LSA_UNICODE_STRING(), ByVal CountOfRights As Long) As Long
+    <DllImport("advapi32")>
+    Public Shared Sub FreeSid(ByVal pSid As IntPtr)
+    <DllImport("advapi32.dll", CharSet:=CharSet.Auto, SetLastError:=True, PreserveSig:=True)>
+    Private Shared Function LookupAccountName(ByVal lpSystemName As String, ByVal lpAccountName As String, ByVal psid As IntPtr, ByRef cbsid As Integer, ByVal domainName As StringBuilder, ByRef cbdomainLength As Integer, ByRef use As Integer) As Boolean
+    <DllImport("advapi32.dll")>
+    Private Shared Function IsValidSid(ByVal pSid As IntPtr) As Boolean
+    <DllImport("advapi32.dll")>
+    Private Shared Function LsaClose(ByVal ObjectHandle As IntPtr) As Long
+    <DllImport("kernel32.dll")>
+    Private Shared Function GetLastError() As Integer
+    <DllImport("advapi32.dll")>
+    Private Shared Function LsaNtStatusToWinError(ByVal status As Long) As Long
+
+<StructLayout(LayoutKind.Sequential)>
+Private Structure LSA_UNICODE_STRING
+    Public Length As UInt16
+    Public MaximumLength As UInt16
+    Public Buffer As IntPtr
+End Structure
+
+<StructLayout(LayoutKind.Sequential)>
+Private Structure LSA_OBJECT_ATTRIBUTES
+    Public Length As Integer
+    Public RootDirectory As IntPtr
+    Public ObjectName As LSA_UNICODE_STRING
+    Public Attributes As UInt32
+    Public SecurityDescriptor As IntPtr
+    Public SecurityQualityOfService As IntPtr
+End Structure
+
+  Private Enum LSA_AccessPolicy
+        POLICY_VIEW_LOCAL_INFORMATION = &H00000001L
+        POLICY_VIEW_AUDIT_INFORMATION = &H00000002L
+        POLICY_GET_PRIVATE_INFORMATION = &H00000004L
+        POLICY_TRUST_ADMIN = &H00000008L
+        POLICY_CREATE_ACCOUNT = &H00000010L
+        POLICY_CREATE_SECRET = &H00000020L
+        POLICY_CREATE_PRIVILEGE = &H00000040L
+        POLICY_SET_DEFAULT_QUOTA_LIMITS = &H00000080L
+        POLICY_SET_AUDIT_REQUIREMENTS = &H00000100L
+        POLICY_AUDIT_LOG_ADMIN = &H00000200L
+        POLICY_SERVER_ADMIN = &H00000400L
+        POLICY_LOOKUP_NAMES = &H00000800L
+        POLICY_NOTIFICATION = &H00001000L
+    End Enum
+
+    Public Shared Function SetRight(ByVal accountName As String, ByVal privilegeName As String) As Long
+        Dim winErrorCode As Long = 0
+        Dim sid As IntPtr = IntPtr.Zero
+        Dim sidSize As Integer = 0
+        Dim domainName As StringBuilder = New StringBuilder()
+        Dim nameSize As Integer = 0
+        Dim accountType As Integer = 0
+        LookupAccountName(String.Empty, accountName, sid, sidSize, domainName, nameSize, accountType)
+        domainName = New StringBuilder(nameSize)
+        sid = Marshal.AllocHGlobal(sidSize)
+        Dim result As Boolean = LookupAccountName(String.Empty, accountName, sid, sidSize, domainName, nameSize, accountType)
+        Console.WriteLine("LookupAccountName result = " & result)
+        Console.WriteLine("IsValidSid: " & IsValidSid(sid))
+        Console.WriteLine("LookupAccountName domainName: " & domainName.ToString())
+
+        If Not result Then
+            winErrorCode = GetLastError()
+            Console.WriteLine("LookupAccountName failed: " & winErrorCode)
+        Else
+            Dim systemName As LSA_UNICODE_STRING = New LSA_UNICODE_STRING()
+            Dim access As Integer = CInt((LSA_AccessPolicy.POLICY_AUDIT_LOG_ADMIN Or LSA_AccessPolicy.POLICY_CREATE_ACCOUNT Or LSA_AccessPolicy.POLICY_CREATE_PRIVILEGE Or LSA_AccessPolicy.POLICY_CREATE_SECRET Or LSA_AccessPolicy.POLICY_GET_PRIVATE_INFORMATION Or LSA_AccessPolicy.POLICY_LOOKUP_NAMES Or LSA_AccessPolicy.POLICY_NOTIFICATION Or LSA_AccessPolicy.POLICY_SERVER_ADMIN Or LSA_AccessPolicy.POLICY_SET_AUDIT_REQUIREMENTS Or LSA_AccessPolicy.POLICY_SET_DEFAULT_QUOTA_LIMITS Or LSA_AccessPolicy.POLICY_TRUST_ADMIN Or LSA_AccessPolicy.POLICY_VIEW_AUDIT_INFORMATION Or LSA_AccessPolicy.POLICY_VIEW_LOCAL_INFORMATION))
+            Dim policyHandle As IntPtr = IntPtr.Zero
+            Dim ObjectAttributes As LSA_OBJECT_ATTRIBUTES = New LSA_OBJECT_ATTRIBUTES()
+            ObjectAttributes.Length = 0
+            ObjectAttributes.RootDirectory = IntPtr.Zero
+            ObjectAttributes.Attributes = 0
+            ObjectAttributes.SecurityDescriptor = IntPtr.Zero
+            ObjectAttributes.SecurityQualityOfService = IntPtr.Zero
+            Dim resultPolicy As UInteger = LsaOpenPolicy(systemName, ObjectAttributes, access, policyHandle)
+            winErrorCode = LsaNtStatusToWinError(resultPolicy)
+
+            If winErrorCode <> 0 Then
+                Console.WriteLine("OpenPolicy failed: " & winErrorCode)
+            Else
+                Dim userRights As LSA_UNICODE_STRING() = New LSA_UNICODE_STRING(0) {}
+                userRights(0) = New LSA_UNICODE_STRING()
+                userRights(0).Buffer = Marshal.StringToHGlobalUni(privilegeName)
+                userRights(0).Length = CType((privilegeName.Length * UnicodeEncoding.CharSize), UInt16)
+                userRights(0).MaximumLength = CType(((privilegeName.Length + 1) * UnicodeEncoding.CharSize), UInt16)
+                Dim res As Long = LsaAddAccountRights(policyHandle, sid, userRights, 1)
+                winErrorCode = LsaNtStatusToWinError(res)
+
+                If winErrorCode <> 0 Then
+                    Console.WriteLine("LsaAddAccountRights failed: " & winErrorCode)
+                End If
+
+                LsaClose(policyHandle)
+            End If
+
+            FreeSid(sid)
+        End If
+
+        Return winErrorCode
+    End Function
+
+
+
+End Class

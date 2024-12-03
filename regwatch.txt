@@ -1,0 +1,52 @@
+  <STAThread>
+        Private Shared Sub Main()
+            Application.EnableVisualStyles()
+            Application.DoEvents()
+            Application.Run(New RegistryMonitorDemoForm())
+        End Sub
+
+        Private Sub OnButtonStartClick(ByVal sender As Object, ByVal e As EventArgs)
+            Dim keyName As String = String.Format("{0}\{1}", comboBoxRegistryHives.SelectedItem, textRegistryKey.Text)
+            listBox1.Items.Add("Monitoring """ & keyName & """ started")
+            registryMonitor = New RegistryMonitor(keyName)
+            AddHandler registryMonitor.RegChanged, New EventHandler(AddressOf OnRegChanged)
+            AddHandler registryMonitor.[Error], New System.IO.ErrorEventHandler(AddressOf OnError)
+            registryMonitor.Start()
+            buttonStart.Enabled = False
+            buttonStop.Enabled = True
+        End Sub
+
+        Private Sub OnButtonStopClick(ByVal sender As Object, ByVal e As EventArgs)
+            StopRegistryMonitor()
+        End Sub
+
+        Private Sub StopRegistryMonitor()
+            If registryMonitor IsNot Nothing Then
+                registryMonitor.[Stop]()
+                RemoveHandler registryMonitor.RegChanged, New EventHandler(AddressOf OnRegChanged)
+                RemoveHandler registryMonitor.[Error], New System.IO.ErrorEventHandler(AddressOf OnError)
+                registryMonitor = Nothing
+                buttonStart.Enabled = True
+                buttonStop.Enabled = False
+                listBox1.Items.Add("Monitoring stopped")
+            End If
+        End Sub
+
+        Private Sub OnRegChanged(ByVal sender As Object, ByVal e As EventArgs)
+            If InvokeRequired Then
+                BeginInvoke(New EventHandler(AddressOf OnRegChanged), New Object() {sender, e})
+                Return
+            End If
+
+            listBox1.Items.Add("Registry has changed")
+        End Sub
+
+        Private Sub OnError(ByVal sender As Object, ByVal e As ErrorEventArgs)
+            If InvokeRequired Then
+                BeginInvoke(New ErrorEventHandler(AddressOf OnError), New Object() {sender, e})
+                Return
+            End If
+
+            listBox1.Items.Add("ERROR: " & e.GetException().Message)
+            StopRegistryMonitor()
+        End Sub

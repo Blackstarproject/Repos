@@ -1,0 +1,39 @@
+This will give you all exe files in "Program Files" as well as the files MD5, to address the OP's concern about renaming files
+
+Imports System.Security.Cryptography
+Imports System.IO
+Public Class Form1
+    Dim MD5 As New MD5CryptoServiceProvider
+    Dim hash() As Byte
+    Dim fs As FileStream
+    Dim finfo As FileInfo
+    Dim sb As New System.Text.StringBuilder
+    Function GetNames(ByVal DirPath As String) As System.Text.StringBuilder
+        Dim objFileInfo As FileInfo
+        Dim objDir As DirectoryInfo = New DirectoryInfo(DirPath)
+        Dim objSubFolder As DirectoryInfo
+        Try
+            For Each objFileInfo In objDir.GetFiles("*.exe")
+                finfo = My.Computer.FileSystem.GetFileInfo(objFileInfo.FullName)
+                Try
+                    fs = finfo.Open(FileMode.Open, FileAccess.Read, FileShare.Read)
+                    hash = MD5.ComputeHash(fs)
+                    fs.Close()
+                Catch ex As Exception
+                    sb.Append("MD5 Error" & vbCrLf)
+                End Try
+                sb.Append(objFileInfo.FullName & " - MD5 = " & Replace(BitConverter.ToString(hash), "-", "") & vbCrLf)
+            Next
+            For Each objSubFolder In objDir.GetDirectories()
+                GetNames(objSubFolder.FullName)
+            Next
+        Catch Ex As Exception
+            sb.Append("Error fetching file/sub-dir" & vbCrLf)
+        End Try
+        Return sb
+    End Function
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        TextBox1.Text = GetNames(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)).ToString
+    End Sub
+End Class
+

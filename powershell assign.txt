@@ -1,0 +1,255 @@
+How to assign user rights to a local user account through powershell
+
+
+(Add - Type)
+Imports System
+Imports System.Collections.Generic
+Imports System.Text
+Imports System.Runtime.InteropServices
+Imports System.Security
+Imports System.Management
+Imports System.Runtime.CompilerServices
+Imports System.ComponentModel
+Imports LSA_HANDLE = IntPtr
+
+Namespace LSA
+    
+    <StructLayout(LayoutKind.Sequential)>  _
+    Structure LSA_OBJECT_ATTRIBUTES
+        
+        Friend Length As Integer
+        
+        Friend RootDirectory As IntPtr
+        
+        Friend ObjectName As IntPtr
+        
+        Friend Attributes As Integer
+        
+        Friend SecurityDescriptor As IntPtr
+        
+        Friend SecurityQualityOfService As IntPtr
+    End Structure
+    
+    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)>  _
+    Structure LSA_UNICODE_STRING
+        
+        Friend Length As System.UInt16
+        
+        Friend MaximumLength As System.UInt16
+        
+        <MarshalAs(UnmanagedType.LPWStr)>  _
+        Friend Buffer As String
+    End Structure
+    
+    NotInheritable Class Win32Sec
+        
+        <SuppressUnmanagedCodeSecurityAttribute()>  _
+        Friend Declare Function LsaOpenPolicy Lib "advapi32" (ByVal SystemName() As LSA_UNICODE_STRING, ByRef ObjectAttributes As LSA_OBJECT_ATTRIBUTES, ByVal AccessMask As Integer, ByRef PolicyHandle As IntPtr) As UInteger
+        
+        <SuppressUnmanagedCodeSecurityAttribute()>  _
+        Friend Declare Function LsaAddAccountRights Lib "advapi32" (ByVal PolicyHandle As LSA_HANDLE, ByVal pSID As IntPtr, ByVal UserRights() As LSA_UNICODE_STRING, ByVal CountOfRights As Integer) As UInteger
+        
+        <SuppressUnmanagedCodeSecurityAttribute()>  _
+        Friend Declare Function LsaLookupNames2 Lib "advapi32" (ByVal PolicyHandle As LSA_HANDLE, ByVal Flags As UInteger, ByVal Count As UInteger, ByVal Names() As LSA_UNICODE_STRING, ByRef ReferencedDomains As IntPtr, ByRef Sids As IntPtr) As Integer
+        
+        Friend Declare Function LsaNtStatusToWinError Lib "advapi32" (ByVal NTSTATUS As Integer) As Integer
+        
+        Friend Declare Function LsaClose Lib "advapi32" (ByVal PolicyHandle As IntPtr) As Integer
+        
+        Friend Declare Function LsaFreeMemory Lib "advapi32" (ByVal Buffer As IntPtr) As Integer
+    End Class
+    
+    ''' <summary>
+    ''' This class is used to grant "Log on as a service", "Log on as a batchjob", "Log on localy" etc.
+    ''' to a user.
+    ''' </summary>
+    Public NotInheritable Class LsaWrapper
+        Implements IDisposable
+        
+        <StructLayout(LayoutKind.Sequential)>  _
+        Structure LSA_TRUST_INFORMATION
+            
+            Friend Name As LSA_UNICODE_STRING
+            
+            Friend Sid As IntPtr
+        End Structure
+        
+        <StructLayout(LayoutKind.Sequential)>  _
+        Structure LSA_TRANSLATED_SID2
+            
+            Friend Use As SidNameUse
+            
+            Friend Sid As IntPtr
+            
+            Friend DomainIndex As Integer
+            
+            Private Flags As UInteger
+        End Structure
+        
+        <StructLayout(LayoutKind.Sequential)>  _
+        Structure LSA_REFERENCED_DOMAIN_LIST
+            
+            Friend Entries As UInteger
+            
+            Friend Domains As LSA_TRUST_INFORMATION
+        End Structure
+        
+        Enum SidNameUse As Integer
+            
+            User = 1
+            
+            Group = 2
+            
+            Domain = 3
+            
+            Alias = 4
+            
+            KnownGroup = 5
+            
+            DeletedAccount = 6
+            
+            Invalid = 7
+            
+            Unknown = 8
+            
+            Computer = 9
+        End Enum
+        
+        Enum Access As Integer
+            
+            POLICY_READ = 131078
+            
+            POLICY_ALL_ACCESS = 987135
+            
+            POLICY_EXECUTE = 133121
+            
+            POLICY_WRITE = 133112
+        End Enum
+        
+        Private Const STATUS_ACCESS_DENIED As UInteger = 3221225506
+        
+        Private Const STATUS_INSUFFICIENT_RESOURCES As UInteger = 3221225626
+        
+        Private Const STATUS_NO_MEMORY As UInteger = 3221225495
+        
+        Private lsaHandle As IntPtr
+        
+        Public Sub New()
+            Me.New(Nothing)
+            
+        End Sub
+        
+        ' // local system if systemName is null
+        Public Sub New(ByVal systemName As String)
+            MyBase.New
+            Dim lsaAttr As LSA_OBJECT_ATTRIBUTES
+            lsaAttr.RootDirectory = IntPtr.Zero
+            lsaAttr.ObjectName = IntPtr.Zero
+            lsaAttr.Attributes = 0
+            lsaAttr.SecurityDescriptor = IntPtr.Zero
+            lsaAttr.SecurityQualityOfService = IntPtr.Zero
+            lsaAttr.Length = Marshal.SizeOf(GetType(LSA_OBJECT_ATTRIBUTES))
+            Me.lsaHandle = IntPtr.Zero
+            Dim system() As LSA_UNICODE_STRING = Nothing
+            If (Not (systemName) Is Nothing) Then
+                system = New LSA_UNICODE_STRING((1) - 1) {}
+                system(0) = LsaWrapper.InitLsaString(systemName)
+            End If
+            
+            Dim ret As UInteger = Win32Sec.LsaOpenPolicy(system, lsaAttr, CType(Access.POLICY_ALL_ACCESS,Integer), Me.lsaHandle)
+            If (ret = 0) Then
+                Return
+            End If
+            
+            If (ret = STATUS_ACCESS_DENIED) Then
+                Throw New UnauthorizedAccessException
+            End If
+            
+            If ((ret = STATUS_INSUFFICIENT_RESOURCES)  _
+                        OrElse (ret = STATUS_NO_MEMORY)) Then
+                Throw New OutOfMemoryException
+            End If
+            
+            Throw New Win32Exception(Win32Sec.LsaNtStatusToWinError(CType(ret,Integer)))
+        End Sub
+        
+        Public Sub AddPrivileges(ByVal account As String, ByVal privilege As String)
+            Dim pSid As IntPtr = Me.GetSIDInformation(account)
+            Dim privileges() As LSA_UNICODE_STRING = New LSA_UNICODE_STRING((1) - 1) {}
+            privileges(0) = LsaWrapper.InitLsaString(privilege)
+            Dim ret As UInteger = Win32Sec.LsaAddAccountRights(Me.lsaHandle, pSid, privileges, 1)
+            If (ret = 0) Then
+                Return
+            End If
+            
+            If (ret = STATUS_ACCESS_DENIED) Then
+                Throw New UnauthorizedAccessException
+            End If
+            
+            If ((ret = STATUS_INSUFFICIENT_RESOURCES)  _
+                        OrElse (ret = STATUS_NO_MEMORY)) Then
+                Throw New OutOfMemoryException
+            End If
+            
+            Throw New Win32Exception(Win32Sec.LsaNtStatusToWinError(CType(ret,Integer)))
+        End Sub
+        
+        Public Sub Dispose()
+            If (Me.lsaHandle <> IntPtr.Zero) Then
+                Win32Sec.LsaClose(Me.lsaHandle)
+                Me.lsaHandle = IntPtr.Zero
+            End If
+            
+            GC.SuppressFinalize(Me)
+        End Sub
+        
+        Private Sub New()
+            MyBase.New
+            Me.Dispose
+        End Sub
+        
+        ' helper functions
+        Private Function GetSIDInformation(ByVal account As String) As IntPtr
+            Dim names() As LSA_UNICODE_STRING = New LSA_UNICODE_STRING((1) - 1) {}
+            Dim lts As LSA_TRANSLATED_SID2
+            Dim tsids As IntPtr = IntPtr.Zero
+            Dim tdom As IntPtr = IntPtr.Zero
+            names(0) = LsaWrapper.InitLsaString(account)
+            lts.Sid = IntPtr.Zero
+            Console.WriteLine("String account: {0}", names(0).Length)
+            Dim ret As Integer = Win32Sec.LsaLookupNames2(Me.lsaHandle, 0, 1, names, tdom, tsids)
+            If (ret <> 0) Then
+                Throw New Win32Exception(Win32Sec.LsaNtStatusToWinError(ret))
+            End If
+            
+            lts = CType(Marshal.PtrToStructure(tsids, GetType(LSA_TRANSLATED_SID2)),LSA_TRANSLATED_SID2)
+            Win32Sec.LsaFreeMemory(tsids)
+            Win32Sec.LsaFreeMemory(tdom)
+            Return lts.Sid
+        End Function
+        
+        Private Shared Function InitLsaString(ByVal s As String) As LSA_UNICODE_STRING
+            ' Unicode strings max. 32KB
+            If (s.Length > 32766) Then
+                Throw New ArgumentException("String too long")
+            End If
+            
+            Dim lus As LSA_UNICODE_STRING = New LSA_UNICODE_STRING
+            lus.Buffer = s
+            char
+            char
+            Return lus
+        End Function
+    End Class
+    
+    Public Class Editor
+        
+        Public Shared Sub AddPrivileges(ByVal account As String, ByVal privilege As String)
+            Dim lsaWrapper As LsaWrapper = New LsaWrapper
+            lsaWrapper.AddPrivileges(account, privilege)
+        End Sub
+    End Class
+End Namespace
+[LSA.Editor
+Unknown::AddPrivileges("KNUCKLE-DRAGGER", "SeBatchLogonRight")
+secpol.msc

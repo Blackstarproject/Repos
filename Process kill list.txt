@@ -1,0 +1,36 @@
+Process Kill List:
+Note: In the “Kill Process” modul is an optional input field called ‘in_UserName’. If you want to kill the process for a specific user you can input a user name like this “DOMAIN\USERNAME” otherwise the current user will be selected.
+
+
+Sub Main()
+    Dim processUser As String
+    Dim processName = "chrome"
+    Dim currentUser As String = System.Security.Principal.WindowsIdentity.GetCurrent().Name
+    Dim processList = Diagnostics.Process.GetProcesses().ToList().Where(Function(process) process.ProcessName.ToString().Equals(processName.ToLower()))
+    Try
+        For Each process In processList
+            processUser = GetProcessOwner(process.Id.ToString())
+            If process.ProcessName.ToString().Equals(processName.ToLower()) And currentUser.Equals(processUser) Then
+                process.Kill()
+            End If
+        Next
+    Catch ex As System.InvalidOperationException
+        'The process was closes by another user or application.
+    End Try
+End Sub
+
+Public Function GetProcessOwner(processId As String) As String
+    Dim query As String = "Select * From Win32_Process Where ProcessID =" & processId
+    Dim searcher = New ManagementObjectSearcher(query)
+    Dim processList As ManagementObjectCollection = searcher.Get()
+
+    For Each obj As ManagementObject In processList
+        Dim argList = New String() {String.Empty, String.Empty}
+        Dim returnValue As Int32 = Convert.ToInt32(obj.InvokeMethod("GetOwner", argList))
+
+        If returnValue.Equals(0) Then
+            Return argList(1) & "\" & argList(0)
+        End If
+    Next
+    Return "NO OWNER"
+End Function

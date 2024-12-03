@@ -1,0 +1,129 @@
+   Inherits System.Windows.Forms.Form
+
+    Private btnAddPriv As System.Windows.Forms.Button
+    Private txtAccountName As System.Windows.Forms.TextBox
+    Private cmbPrivilege As System.Windows.Forms.ComboBox
+    Private lblDocLink As System.Windows.Forms.LinkLabel
+    Private btnImpersonate As System.Windows.Forms.Button
+    Private btnImpUndo As System.Windows.Forms.Button
+    Private components As System.ComponentModel.Container = Nothing
+    Private impContext As WindowsImpersonationContext = Nothing
+
+    Public Sub New()
+        InitializeComponent()
+    End Sub
+
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        If disposing Then
+
+            If components IsNot Nothing Then
+                components.Dispose()
+            End If
+        End If
+
+        MyBase.Dispose(disposing)
+    End Sub
+
+    Private Sub InitializeComponent()
+        Me.btnAddPriv = New System.Windows.Forms.Button()
+        Me.txtAccountName = New System.Windows.Forms.TextBox()
+        Me.cmbPrivilege = New System.Windows.Forms.ComboBox()
+        Me.lblDocLink = New System.Windows.Forms.LinkLabel()
+        Me.btnImpersonate = New System.Windows.Forms.Button()
+        Me.btnImpUndo = New System.Windows.Forms.Button()
+        Me.SuspendLayout()
+        Me.btnAddPriv.Location = New System.Drawing.Point(24, 104)
+        Me.btnAddPriv.Name = "btnAddPriv"
+        Me.btnAddPriv.Size = New System.Drawing.Size(176, 23)
+        Me.btnAddPriv.TabIndex = 0
+        Me.btnAddPriv.Text = "Add Privilege to Administrator"
+        AddHandler Me.btnAddPriv.Click, New System.EventHandler(AddressOf Me.btnAddPriv_Click)
+        Me.txtAccountName.Location = New System.Drawing.Point(24, 16)
+        Me.txtAccountName.Name = "txtAccountName"
+        Me.txtAccountName.Size = New System.Drawing.Size(280, 20)
+        Me.txtAccountName.TabIndex = 1
+        Me.txtAccountName.Text = "Administrator"
+        AddHandler Me.txtAccountName.TextChanged, New System.EventHandler(AddressOf Me.txtAccountName_TextChanged)
+        Me.cmbPrivilege.Items.AddRange(New Object() {"SeServiceLogonRight", "SeTcbName", "SeSystemtimePrivilege", "SeDebugName"})
+        Me.cmbPrivilege.Location = New System.Drawing.Point(24, 48)
+        Me.cmbPrivilege.Name = "cmbPrivilege"
+        Me.cmbPrivilege.Size = New System.Drawing.Size(280, 21)
+        Me.cmbPrivilege.TabIndex = 2
+        Me.cmbPrivilege.Text = "SeServiceLogonRight"
+        Me.lblDocLink.LinkArea = New System.Windows.Forms.LinkArea(38, 17)
+        Me.lblDocLink.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline
+        Me.lblDocLink.Location = New System.Drawing.Point(24, 80)
+        Me.lblDocLink.Name = "lblDocLink"
+        Me.lblDocLink.Size = New System.Drawing.Size(296, 24)
+        Me.lblDocLink.TabIndex = 3
+        Me.lblDocLink.TabStop = True
+        Me.lblDocLink.Text = "For all privileges see WinNT.h or the SDK documentation"
+        Me.lblDocLink.LinkClicked += New System.Windows.Forms.LinkLabelLinkClickedEventHandler(AddressOf Me.lblDocLink_LinkClicked)
+        Me.btnImpersonate.Location = New System.Drawing.Point(24, 152)
+        Me.btnImpersonate.Name = "btnImpersonate"
+        Me.btnImpersonate.Size = New System.Drawing.Size(176, 23)
+        Me.btnImpersonate.TabIndex = 0
+        Me.btnImpersonate.Text = "Impersonate Administrator"
+        AddHandler Me.btnImpersonate.Click, New System.EventHandler(AddressOf Me.btnImpersonate_Click)
+        Me.btnImpUndo.Enabled = False
+        Me.btnImpUndo.Location = New System.Drawing.Point(24, 184)
+        Me.btnImpUndo.Name = "btnImpUndo"
+        Me.btnImpUndo.Size = New System.Drawing.Size(176, 23)
+        Me.btnImpUndo.TabIndex = 0
+        Me.btnImpUndo.Text = "Be yourself"
+        AddHandler Me.btnImpUndo.Click, New System.EventHandler(AddressOf Me.btnImpUndo_Click)
+        Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
+        Me.ClientSize = New System.Drawing.Size(384, 213)
+        Me.Controls.AddRange(New System.Windows.Forms.Control() {Me.lblDocLink, Me.cmbPrivilege, Me.txtAccountName, Me.btnAddPriv, Me.btnImpersonate, Me.btnImpUndo})
+        Me.Name = "Form1"
+        Me.Text = "Using LSA Functions"
+        AddHandler Me.Load, New System.EventHandler(AddressOf Me.Form1_Load)
+        Me.ResumeLayout(False)
+    End Sub
+
+    <STAThread>
+    Private Shared Sub Main()
+        Application.Run(New Form1())
+    End Sub
+
+    Private Sub Form1_Load(ByVal sender As Object, ByVal e As System.EventArgs)
+    End Sub
+
+    Private Sub btnAddPriv_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        If txtAccountName.Text <> String.Empty Then
+            Dim result As Long = LsaUtility.SetRight(txtAccountName.Text, cmbPrivilege.Text)
+
+            If result = 0 Then
+                MessageBox.Show("Privilege added")
+            Else
+                MessageBox.Show("Privilege not added: +winErrorCode")
+            End If
+        End If
+    End Sub
+
+    Private Sub lblDocLink_LinkClicked(ByVal sender As Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs)
+        System.Diagnostics.Process.Start("ms-help://MS.VSCC/MS.MSDNVS.1031/security/accctrl_96lv.htm")
+    End Sub
+
+    Private Sub btnImpersonate_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        If txtAccountName.Text <> String.Empty Then
+            Dim dlg As InputBox = New InputBox(txtAccountName.Text)
+
+            If dlg.ShowDialog(Me) = DialogResult.OK Then
+                impContext = LogonUtility.ImpersonateUser(txtAccountName.Text, dlg.Password)
+                btnImpUndo.Enabled = True
+                btnImpersonate.Enabled = False
+            End If
+        End If
+    End Sub
+
+    Private Sub btnImpUndo_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        impContext.Undo()
+        btnImpUndo.Enabled = False
+        btnImpersonate.Enabled = True
+    End Sub
+
+    Private Sub txtAccountName_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        btnAddPriv.Text = "AddPrivilege to " & txtAccountName.Text
+        btnImpersonate.Text = "Impersonate " & txtAccountName.Text
+    End Sub
